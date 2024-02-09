@@ -50,6 +50,7 @@ export async function POST(request: Request) {
     const token = cookieStore.get(COOKIE_NAME);
 
     if (!token) {
+      console.log("Sem TOKEN");
       return NextResponse.json(
         {
           message: "Unauthorized",
@@ -67,6 +68,7 @@ export async function POST(request: Request) {
     try {
       payload = verify(value, secret);
     } catch (e) {
+      console.log("ERRO VERIFY");
       return NextResponse.json(
         {
           message: "Something went wrong",
