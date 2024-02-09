@@ -15,17 +15,17 @@ export default function UserDataTimes({
 }) {
   return (
     <div className="flex w-full flex-col items-center border-b-1 border-black px-4">
-      <Tabs aria-label="Options" variant="light" className="w-full">
-        <Tab key="timeline" title="Linha do tempo" className="w-56">
+      <Tabs aria-label="Options" variant="light" className="w-full flex justify-center">
+        <Tab key="timeline" title="Linha do tempo" className="w-full">
           <VerticalTimeLine
             relatories={userData.Profile?.targetedRelatories}
             userData={userData}
           />
         </Tab>
-        <Tab key="courses" title="Cursos" className="w-56">
+        <Tab key="courses" title="Cursos" className="w-full">
           <div></div>
         </Tab>
-        <Tab key="posts" title="Postagens" className="w-56">
+        <Tab key="posts" title="Postagens" className="w-full">
           <div></div>
         </Tab>
       </Tabs>

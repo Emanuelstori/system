@@ -98,7 +98,7 @@ export default function verticalTimeLine({
   userData: any;
 }) {
   return (
-    <>
+    <div className="flex max-w-full">
       <Timeline position="left">
         {relatories?.map((item, index) => (
           <>
@@ -161,7 +161,7 @@ export default function verticalTimeLine({
           </>
         ))}
       </Timeline>
-    </>
+    </div>
   );
 }
 
