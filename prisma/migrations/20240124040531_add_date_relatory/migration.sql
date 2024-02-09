@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Relatory" ADD COLUMN     "acceptedAt" TIMESTAMP(3),
+ADD COLUMN     "createdAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP;

@@ -1,0 +1,146 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  //directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Profile {
+  id                    String          @id
+  tag                   String?         @db.VarChar(255)
+  salary                Int             @default(1)
+  warnings              Int             @default(0)
+  identity              String          @db.VarChar(255)
+  user                  User            @relation(fields: [id], references: [id], onDelete: Cascade)
+  roleId                Int
+  role                  Role            @relation(fields: [roleId], references: [id])
+  companyId             Int?
+  company               CompanyRole?    @relation(fields: [companyId], references: [id])
+  authoredRelatories    Relatory[]      @relation("RelatoryAuthor")
+  targetedRelatories    Relatory[]      @relation("RelatoryTarget")
+  sentNotifications     Notifications[] @relation("NotificationAuthor")
+  receivedNotifications Notifications[] @relation("NotificationTarget")
+  posts                 Post[]          @relation("PostAuthor")
+  watchedPosts          Post[]          @relation("WatchedPosts")
+  Awarded               Awarded?        @relation(fields: [awardedId], references: [id], onDelete: Cascade)
+  awardedId             Int?
+  Alert                 Alert[]         @relation("AlertAuthor")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  nick      String   @unique
+  email     String?  @unique
+  password  String?  @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  active    Boolean  @default(false) @db.Boolean
+  Profile   Profile?
+}
+
+model Role {
+  id        Int       @id @default(autoincrement())
+  role      String    @unique @default("Soldado")
+  roleLevel Int       @unique @default(0)
+  profiles  Profile[]
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+}
+
+model CompanyRole {
+  id        Int       @id @default(autoincrement())
+  idRel     Int?      @unique
+  role      String    @default("firstRole")
+  company   Company   @relation(fields: [companyId], references: [id])
+  profiles  Profile[]
+  companyId Int
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+}
+
+model Company {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String
+  roles       CompanyRole[]
+  createdAt   DateTime      @default(now()) @db.Timestamp(6)
+}
+
+enum RelatoryType {
+  USER_ACCESS
+  USER_REINTEGRATION
+  USER_PROMOTION
+  USER_RELEGATION
+  USER_DISCONNEXION
+  USER_TAG
+  USER_CONTRACT
+  USER_CHANGE_ACCOUNT
+  USER_RETIREE
+  USER_LICENSE
+  CLASS_APPLICATION
+  WARNING
+  ROLE_CREATION
+  ROLE_BUY
+}
+
+model Relatory {
+  id           Int          @id @default(autoincrement())
+  title        String
+  relatoryType RelatoryType
+  author       Profile      @relation(name: "RelatoryAuthor", fields: [profileId], references: [id])
+  targets      Profile[]    @relation(name: "RelatoryTarget")
+  accepted     Boolean      @default(false)
+  description  String?
+  createdAt    DateTime     @default(now()) @db.Timestamp(6)
+  acceptedAt   DateTime?
+  profileId    String
+}
+
+enum NotificationType {
+  NORMAL
+  ALERT
+  DANGER
+  SUCCESS
+  ERROR
+}
+
+model Notifications {
+  id         Int              @id
+  read       Boolean          @default(false)
+  author     Profile          @relation("NotificationAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  targets    Profile[]        @relation("NotificationTarget")
+  type       NotificationType
+  NotifiedAt DateTime         @default(now()) @db.Timestamp(6)
+  authorId   String
+}
+
+model Post {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String
+  content     String
+  likes       Int       @default(0)
+  dislikes    Int       @default(0)
+  author      Profile   @relation("PostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
+  watchedBy   Profile[] @relation("WatchedPosts")
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+}
+
+model Awarded {
+  id        Int       @id @default(autoincrement())
+  reason    String
+  awarded   Profile[]
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+}
+
+model Alert {
+  id        Int      @id @default(autoincrement())
+  content   String
+  alertedBy Profile  @relation("AlertAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+}
