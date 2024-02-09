@@ -1,18 +1,150 @@
 "use client";
 import PlaySound from "@/components/PlaySound";
-import { Avatar, AvatarGroup, Button } from "@nextui-org/react";
+import TextEditor from "@/components/TextEditor";
+import {
+  Avatar,
+  AvatarGroup,
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from "@nextui-org/react";
+import axios from "axios";
 import Image from "next/image";
-import { FaLeftLong, FaRightLong } from "react-icons/fa6";
+import { ChangeEvent, useState } from "react";
+import { FaLeftLong, FaPencil, FaPlus, FaRightLong } from "react-icons/fa6";
 import { IoNewspaper } from "react-icons/io5";
 
 export default function Posts({ posts }: { posts: {}[] }) {
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    "http://habbo.com.br/habbo-imaging/badge/b27114s02130s01110s43114s191141920f434b8b01fb17be50479af8878de.gif"
+  );
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log(event);
+    const payload: {
+      title: string;
+      content: string;
+      image?: string;
+      description: string;
+    } = {
+      title: event.currentTarget.postTitle.value,
+      description: event.currentTarget.postDescription.value,
+      content: event.currentTarget.postContent.value,
+    };
+
+    if (event.currentTarget.postImage.value) {
+      payload.image = event.currentTarget.postImage.value;
+    }
+
+    await axios.post("/api/globalData/posts", payload);
+  };
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
+        <ModalContent>
+          {(onClose) => (
+            <form>
+              <ModalHeader className="flex flex-col gap-1">
+                Criar Post
+              </ModalHeader>
+              <ModalBody>
+                <div className="flex">
+                  <div className="flex items-center justify-center relative">
+                    <label
+                      htmlFor="imageInput"
+                      className="relative cursor-pointer p-2 rounded-lg focus:outline-none focus:shadow-outline"
+                    >
+                      {imagePreview && (
+                        <div className="relative group">
+                          <div className="absolute inset-0 bg-black opacity-50 rounded flex items-center justify-center">
+                            <FaPencil className="text-white text-4xl" />
+                          </div>
+                          <img
+                            src={imagePreview}
+                            alt="Image Preview"
+                            className="w-56 max-h-56 rounded"
+                            style={{ objectFit: "contain" }}
+                          />
+                        </div>
+                      )}
+                      <input
+                        id="imageInput"
+                        name="image"
+                        type="file"
+                        className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                      />
+                    </label>
+                  </div>
+                  <div className="flex flex-col w-96 gap-4">
+                    <div>
+                      <label
+                        htmlFor="titleInput"
+                        className="relative cursor-pointer p-2 rounded-lg focus:outline-none focus:shadow-outline"
+                      >
+                        Título:
+                      </label>
+                      <Input isRequired type="text" label="Título" />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="descriptionInput"
+                        className="relative cursor-pointer p-2 rounded-lg focus:outline-none focus:shadow-outline"
+                      >
+                        Descrição:
+                      </label>
+                      <Input isRequired type="text" label="Descrição" />
+                    </div>
+                  </div>
+                </div>
+                <label
+                  htmlFor="contentInput"
+                  className="relative cursor-pointer p-2 rounded-lg focus:outline-none focus:shadow-outline"
+                >
+                  Conteúdo
+                </label>
+                <TextEditor />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Fechar
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  Postar
+                </Button>
+              </ModalFooter>
+            </form>
+          )}
+        </ModalContent>
+      </Modal>
       {/* INICIO POSTS */}
       <div className="flex flex-col gap-2 w-fit items-start">
-        <h1 className="flex gap-2 px-2 text-xl items-center">
-          <IoNewspaper /> Posts
-        </h1>
+        <div className="flex justify-between w-full">
+          <h1 className="flex gap-2 px-2 text-xl items-center">
+            <IoNewspaper /> Posts
+          </h1>
+          <Button isIconOnly color="primary" aria-label="Like" onPress={onOpen}>
+            <FaPlus />
+          </Button>
+        </div>
         <div className="w-fit flex flex-wrap gap-8 justify-start">
           {posts.map((item, index) => (
             <div
@@ -56,7 +188,7 @@ export default function Posts({ posts }: { posts: {}[] }) {
                         <Image
                           fill={true}
                           style={{ objectFit: "cover" }}
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"                         
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           src={`https://www.habbo.com/habbo-imaging/avatarimage?size=l&figure=hr-3260-1394.hd-3103-8.ch-245-110.lg-3116-110-110.sh-906-92.ha-1009-1323.ea-5007.fa-1211.cc-3744-110-110&direction=2&head_direction=3&size=l&action=std,wav`}
                           alt={""}
                         />

@@ -1,15 +1,30 @@
-import { COOKIE_NAME, minLevelCreateRole } from "@/constants";
-import HttpStatusCode from "@/utils/HttpStatusCode";
+import { COOKIE_NAME, minLevelCreatePost } from "@/constants";
 import prisma from "@/prisma/client";
+import HttpStatusCode from "@/utils/HttpStatusCode";
 import { verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-
 export async function POST(request: Request) {
   const body = await request.json();
+  const {
+    title,
+    image,
+    description,
+    content,
+  }: { title: string; image: string; description: string; content: string } =
+    body;
 
-  const { targetProfileIds }: { targetProfileIds: string[] } = body;
+  if (!title || !description || !content) {
+    return NextResponse.json(
+      {
+        message: "Missing Fields",
+      },
+      {
+        status: HttpStatusCode.BAD_REQUEST,
+      }
+    );
+  }
 
   const cookieStore = cookies();
 
@@ -62,7 +77,7 @@ export async function POST(request: Request) {
     });
     if (
       !permissionUser?.Profile?.role.roleLevel ||
-      permissionUser?.Profile?.role.roleLevel <= minLevelCreateRole 
+      permissionUser?.Profile?.role.roleLevel <= minLevelCreatePost
     ) {
       return NextResponse.json(
         {
@@ -73,16 +88,34 @@ export async function POST(request: Request) {
         }
       );
     }
-    const relatory = await prisma.relatory.create({
-      data: {
-        title: "Criação de cargo.",
-        relatoryType: "ROLE_CREATION",
-        author: {
-          connect: { id: payload.data.id },
-        },        
+    //payload.data.id
+    const postData: {
+      title: string;
+      image?: string;
+      description: string;
+      content: string;
+      author: {
+        connect: {
+          id: string;
+        };
+      };
+    } = {
+      title: title,
+      description: description,
+      content: content,
+      author: {
+        connect: { id: payload.data.id },
       },
+    };
+
+    if (image) {
+      postData.image = image;
+    }
+
+    const post = await prisma.post.create({
+      data: postData,
     });
-    if (!relatory) {
+    if (!post) {
       return NextResponse.json(
         {
           message: "Erro ao criar relatório.",
@@ -113,3 +146,19 @@ export async function POST(request: Request) {
     prisma.$disconnect();
   }
 }
+
+/*
+model Post {
+  id          Int       @id @default(autoincrement())
+  title       String
+  image       String
+  description String
+  content     String
+  likes       Int       @default(0)
+  dislikes    Int       @default(0)
+  author      Profile   @relation("PostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
+  watchedBy   Profile[] @relation("WatchedPosts")
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+}
+*/
