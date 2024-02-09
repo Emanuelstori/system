@@ -25,14 +25,14 @@ export default function TextEditor() {
 
     ["clean"],
   ];
-  const module = {
+  const modulos = {
     toolbar: toolbarOptions,
   };
   return (
     <div className="h-72 overflow-y-auto">
       <ReactQuill
         className="h-max bg-zinc-900"
-        modules={module}
+        modules={modulos}
         theme="snow"
         value={value}
         onChange={setValue}

@@ -38,7 +38,7 @@ export default function Posts({ posts }: { posts: {}[] }) {
                 </div>
                 <div className="flex max-sm:!px-1 w-full justify-start px-4 text-xs text-justify">
                   Let me start off by saying you can do this! It will be hard
-                  work but isn't impossible.
+                  work but isn&apos;t impossible.
                 </div>
                 <div className="w-full max-sm:!px-1 items-start justify-start px-4 py-2">
                   <AvatarGroup

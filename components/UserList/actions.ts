@@ -5,6 +5,8 @@ import axios from "axios";
 import { cookies, headers } from "next/headers";
 
 export async function createUser(formData: FormData) {
+  const headersList = headers();
+  const domain = headersList.get("host");
   const cookieStore = cookies();
 
   const token = cookieStore.get(COOKIE_NAME);
@@ -14,11 +16,11 @@ export async function createUser(formData: FormData) {
   const rawFormData = {
     username: formData.get("username"),
     TAG: formData.get("tag"),
-    patente: formData.get("patente")
+    patente: formData.get("patente"),
   };
   try {
     const createdUser = await axios.post(
-      "http://localhost:3000/api/auth/newUser",
+      `http://${domain}/api/auth/newUser`,
       rawFormData,
       {
         headers: {
@@ -33,7 +35,7 @@ export async function createUser(formData: FormData) {
       description: "ainda não se cadastrou em nosso system.",
     };
     const relatory = await axios.post(
-      "http://localhost:3000/api/relatories",
+      `http://${domain}/api/relatories`,
       relatoryFormData,
       {
         headers: {
@@ -43,6 +45,7 @@ export async function createUser(formData: FormData) {
     );
     revalidatePath("/dashboard/listagem", "page");
   } catch (err) {
+    console.log(err);
     console.log("Erro");
   }
 }
