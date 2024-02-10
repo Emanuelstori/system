@@ -10,13 +10,24 @@ import { cookies } from "next/headers";
 import { verify } from "jsonwebtoken";
 import SearchBox from "@/components/SearchBox/index";
 import prisma from "@/prisma/client";
+import { Post } from "@prisma/client";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams?: { pagePosts: string | undefined };
+}) {
+  var currentPage = 0;
+  if (searchParams?.pagePosts) {
+    currentPage = parseInt(searchParams.pagePosts);
+  }
   const userInfo = await getUserInfo();
 
   const userList = await getUsers();
 
-  const posts = [{}, {}, {}, {}, {}];
+  const posts = await getPosts({ page: currentPage });
+
+  const maxPage = await getMaxPages();
 
   return (
     <div className="w-full max-w-screen h-full">
@@ -42,7 +53,7 @@ export default async function DashboardPage() {
           <Ranking />
         </div>
         <div className="flex w-full mt-4 justify-center md:justify-between h-fit items-start gap-2 flex-wrap md:!flex-nowrap">
-          <Posts posts={posts} />
+          <Posts posts={posts} maxPage={maxPage} />
           <Destaques />
         </div>
       </div>
@@ -83,6 +94,84 @@ async function getUsers(): Promise<User[] | null> {
     return users;
   } catch (e) {
     return null;
+  } finally {
+    prisma.$disconnect();
+  }
+}
+
+async function getPosts({ page }: { page: number }): Promise<Post[] | []> {
+  try {
+    var pageNumber = page || 1;
+    let skipValue;
+    if (pageNumber > 1) {
+      skipValue = pageNumber - 2 + 5;
+    } else {
+      skipValue = 0;
+    }
+    pageNumber < 1 && (pageNumber = 1);
+    const posts = await prisma.post.findMany({
+      skip: skipValue,
+      take: 5,
+    });
+    return posts;
+  } catch (e) {
+    return [
+      {
+        id: 1,
+        image: "string",
+        title: "string",
+        description: "string",
+        content: "string",
+        likes: 0,
+        dislikes: 0,
+        authorId: "string",
+        createdAt: new Date(),
+      },
+      {
+        id: 1,
+        image: "string",
+        title: "string",
+        description: "string",
+        content: "string",
+        likes: 0,
+        dislikes: 0,
+        authorId: "string",
+        createdAt: new Date(),
+      },
+      {
+        id: 1,
+        image: "string",
+        title: "string",
+        description: "string",
+        content: "string",
+        likes: 0,
+        dislikes: 0,
+        authorId: "string",
+        createdAt: new Date(),
+      },
+      {
+        id: 1,
+        image: "string",
+        title: "string",
+        description: "string",
+        content: "string",
+        likes: 0,
+        dislikes: 0,
+        authorId: "string",
+        createdAt: new Date(),
+      },
+    ];
+  } finally {
+    prisma.$disconnect();
+  }
+}
+
+async function getMaxPages(): Promise<number> {
+  try {
+    const pages = await prisma.post.count();
+    return pages;
+  } catch (e) {
+    return 0;
   } finally {
     prisma.$disconnect();
   }

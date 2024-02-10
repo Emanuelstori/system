@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     });
     if (
       !permissionUser?.Profile?.role.roleLevel ||
-      permissionUser?.Profile?.role.roleLevel <= minLevelCreatePost
+      !(permissionUser?.Profile?.role.roleLevel <= minLevelCreatePost)
     ) {
       return NextResponse.json(
         {

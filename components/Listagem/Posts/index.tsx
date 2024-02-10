@@ -18,8 +18,16 @@ import Image from "next/image";
 import { ChangeEvent, useState } from "react";
 import { FaLeftLong, FaPencil, FaPlus, FaRightLong } from "react-icons/fa6";
 import { IoNewspaper } from "react-icons/io5";
+import Pagination from "./Pagination";
 
-export default function Posts({ posts }: { posts: {}[] }) {
+export default function Posts({
+  posts,
+  maxPage,
+}: {
+  posts: {}[];
+  maxPage: number;
+}) {
+  const [value, setValue] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(
     "http://habbo.com.br/habbo-imaging/badge/b27114s02130s01110s43114s191141920f434b8b01fb17be50479af8878de.gif"
   );
@@ -36,7 +44,8 @@ export default function Posts({ posts }: { posts: {}[] }) {
   };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(event);
+    //event.currentTarget.postTitle.value
+    //event.currentTarget.postDescription.value
     const payload: {
       title: string;
       content: string;
@@ -45,13 +54,17 @@ export default function Posts({ posts }: { posts: {}[] }) {
     } = {
       title: event.currentTarget.postTitle.value,
       description: event.currentTarget.postDescription.value,
-      content: event.currentTarget.postContent.value,
+      content: value,
     };
 
-    if (event.currentTarget.postImage.value) {
-      payload.image = event.currentTarget.postImage.value;
+    if (event.currentTarget.postImage.files.lenght > 0) {
+      const imageGet = await getBase64Image(
+        event.currentTarget.postImage.files[0]
+      );
+      if (imageGet) {
+        payload.image = imageGet.toString();
+      }
     }
-
     await axios.post("/api/globalData/posts", payload);
   };
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -60,7 +73,7 @@ export default function Posts({ posts }: { posts: {}[] }) {
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
         <ModalContent>
           {(onClose) => (
-            <form>
+            <form onSubmit={handleSubmit}>
               <ModalHeader className="flex flex-col gap-1">
                 Criar Post
               </ModalHeader>
@@ -85,8 +98,8 @@ export default function Posts({ posts }: { posts: {}[] }) {
                         </div>
                       )}
                       <input
-                        id="imageInput"
-                        name="image"
+                        id="postImage"
+                        name="postImage"
                         type="file"
                         className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
                         accept="image/*"
@@ -94,7 +107,7 @@ export default function Posts({ posts }: { posts: {}[] }) {
                       />
                     </label>
                   </div>
-                  <div className="flex flex-col w-96 gap-4">
+                  <div className="flex flex-col w-96 gap-2">
                     <div>
                       <label
                         htmlFor="titleInput"
@@ -102,7 +115,13 @@ export default function Posts({ posts }: { posts: {}[] }) {
                       >
                         Título:
                       </label>
-                      <Input isRequired type="text" label="Título" />
+                      <Input
+                        isRequired
+                        id="postTitle"
+                        name="postTitle"
+                        type="text"
+                        label="Título"
+                      />
                     </div>
                     <div>
                       <label
@@ -111,7 +130,13 @@ export default function Posts({ posts }: { posts: {}[] }) {
                       >
                         Descrição:
                       </label>
-                      <Input isRequired type="text" label="Descrição" />
+                      <Input
+                        isRequired
+                        id="postDescription"
+                        name="postDescription"
+                        type="text"
+                        label="Descrição"
+                      />
                     </div>
                   </div>
                 </div>
@@ -121,13 +146,13 @@ export default function Posts({ posts }: { posts: {}[] }) {
                 >
                   Conteúdo
                 </label>
-                <TextEditor />
+                <TextEditor value={value} setValue={setValue} />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   Fechar
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button color="primary" type="submit">
                   Postar
                 </Button>
               </ModalFooter>
@@ -227,26 +252,20 @@ export default function Posts({ posts }: { posts: {}[] }) {
             </div>
           ))}
         </div>
-        <div className="flex w-full items-end justify-start md:justify-end flex-wrap">
-          <Button
-            onMouseEnter={PlaySound}
-            radius="none"
-            variant="bordered"
-            className="p-2 rounded-l-md flex gap-1 items-center hover:border-violet-600 transition-all duration-250"
-          >
-            <FaLeftLong className="group-hover:fill-violet-400 transition-all duration-250" />
-          </Button>
-          <Button
-            onMouseEnter={PlaySound}
-            radius="none"
-            variant="bordered"
-            className="p-2 rounded-r-md flex gap-1 items-center hover:border-violet-600 transition-all duration-250"
-          >
-            <FaRightLong className="group-hover:fill-violet-400 transition-all duration-250" />
-          </Button>
-        </div>
+        <Pagination maxPage={maxPage} />
       </div>
       {/* FIM POSTS */}
     </>
   );
+}
+
+async function getBase64Image(
+  file: File
+): Promise<string | ArrayBuffer | null> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(file);
+  });
 }
