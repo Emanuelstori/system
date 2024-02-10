@@ -19,12 +19,15 @@ import { ChangeEvent, useState } from "react";
 import { FaLeftLong, FaPencil, FaPlus, FaRightLong } from "react-icons/fa6";
 import { IoNewspaper } from "react-icons/io5";
 import Pagination from "./Pagination";
+import { Post } from "@prisma/client";
+import { format } from "date-fns";
+const { ptBR } = require("date-fns/locale");
 
 export default function Posts({
   posts,
   maxPage,
 }: {
-  posts: {}[];
+  posts: Post[];
   maxPage: number;
 }) {
   const [value, setValue] = useState("");
@@ -183,19 +186,24 @@ export default function Posts({
                     fill={true}
                     style={{ objectFit: "cover" }}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    src={`https://i.pinimg.com/736x/f0/52/40/f05240a1f188ae7d5849091a664381b1.jpg`}
+                    src={item.image}
                     alt={""}
                   />
                 </div>
               </div>
               <div className="w-full max-sm:items-start max-sm:px-4 flex flex-col gap-3 items-center justify-center">
                 <div className="flex flex-col gap-1">
-                  <h1 className="font-bold">Guide to Photography</h1>
-                  <p className="text-xs">11 de Janeiro 2024</p>
+                  <h1 className="font-bold">{item.title}</h1>
+                  <p className="text-xs">{`${format(
+                    item.createdAt,
+                    "dd MMM yyyy",
+                    {
+                      locale: ptBR,
+                    }
+                  )}`}</p>
                 </div>
                 <div className="flex max-sm:!px-1 w-full justify-start px-4 text-xs text-justify">
-                  Let me start off by saying you can do this! It will be hard
-                  work but isn&apos;t impossible.
+                  {item.description}
                 </div>
                 <div className="w-full max-sm:!px-1 items-start justify-start px-4 py-2">
                   <AvatarGroup

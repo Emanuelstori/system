@@ -99,7 +99,7 @@ async function getUsers(): Promise<User[] | null> {
   }
 }
 
-async function getPosts({ page }: { page: number }): Promise<Post[] | []> {
+async function getPosts({ page }: { page: number }): Promise<Post[]> {
   try {
     var pageNumber = page || 1;
     let skipValue;
