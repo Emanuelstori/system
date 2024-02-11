@@ -179,6 +179,10 @@ export default function Posts({
               key={index}
               onMouseEnter={PlaySound}
               className="bg-zinc-900 hover:bg-zinc-950 max-sm:w-full hover:!bg-opacity-30 w-56 h-fit py-1 rounded-md hover:cursor-pointer hover:scale-105 transition-all duration-250"
+              style={{
+                transition: "opacity 0.5s ease-in-out",
+                opacity: 1,
+              }}
             >
               <div className="p-2 h-32 w-full">
                 <div className="relative w-full h-full rounded">

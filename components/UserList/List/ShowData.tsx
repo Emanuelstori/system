@@ -1,5 +1,6 @@
 "use client";
 import { Transition } from "@headlessui/react";
+import Image from "next/image";
 
 export default function ShowData({
   profiles,
@@ -26,7 +27,15 @@ export default function ShowData({
                 key={index}
                 className="flex flex-col justify-center items-center w-fit p-2"
               >
-                <img src={profile.user.figureData!} alt="" />
+                <div className="relative h-20 w-20">
+                  <Image
+                    src={profile.user.figureData!}
+                    alt=""
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-full"
+                  />
+                </div>
                 <p>{profile.user.nick}</p>
               </div>
             ))}
@@ -48,6 +57,7 @@ interface dataProfiles {
   awardedId: number | null;
   user: User;
 }
+
 type User = {
   id: string;
   nick: string;
