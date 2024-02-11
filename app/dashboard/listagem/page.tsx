@@ -5,13 +5,9 @@ import React from "react";
 export default async function ListagemPage({
   searchParams,
 }: {
-  searchParams?: { page: string | undefined; open: string | undefined };
+  searchParams?: { open: string | undefined };
 }) {
-  var pageNumber: number = 1;
   var showModal: boolean = false;
-  if (searchParams?.page) {
-    pageNumber = parseInt(searchParams.page);
-  }
   if (searchParams?.open) {
     if (searchParams?.open == "true") {
       showModal = true;
@@ -19,7 +15,7 @@ export default async function ListagemPage({
   }
   return (
     <div className="flex flex-wrap w-full items-center max-w-screen justify-center">
-      <UserList page={pageNumber} showModal={showModal} />
+      <UserList showModal={showModal} />
     </div>
   );
 }

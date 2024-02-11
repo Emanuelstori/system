@@ -12,18 +12,11 @@ import { createUser } from "./actions";
 import UserCreation from "./UserCreation/index";
 import CreateUserbutton from "./UserCreation/CreateUserbutton";
 import CloseModalButton from "./UserCreation/CloseModalButton";
-import { Role } from "@prisma/client";
+import { Profile, Role } from "@prisma/client";
+import List from "./List/List";
 
-export default async function UserList({
-  page,
-  showModal,
-}: {
-  page?: number;
-  showModal?: boolean;
-}) {
-  const users = await getUsers({ page: page });
+export default async function UserList({ showModal }: { showModal?: boolean }) {
   const userInfo = await getUserInfo();
-  const maxPage = await getMaxPage();
   const patentes = await getPatentes();
 
   return (
@@ -47,12 +40,122 @@ export default async function UserList({
           </div>
         </div>
       )}
-      <div className="max-w-full items-center justify-center flex flex-col flex-wrap gap-4 px-10">
-        <div className="fixed top-20 right-10">
+      <div className="w-full items-center justify-center flex flex-col flex-wrap gap-4 px-10">
+        <div className="max-sm:!flex md:fixed top-20 right-10">
           <CreateUserbutton />
         </div>
-        <div className="flex max-w-full flex-wrap gap-4 pt-10 items-center justify-center">
-          {users?.map((user, index) => (
+        <div className="flex w-full flex-wrap gap-4 pt-10 items-center justify-center">
+          <List patentes={patentes} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+async function getUserInfo(): Promise<any> {
+  const cookieStore = cookies();
+
+  const token = cookieStore.get(COOKIE_NAME);
+
+  if (!token) return;
+
+  const { value } = token;
+  const secret = process.env.JWT_SECRET || "";
+
+  const payload = verify(value, secret);
+
+  const response = {
+    payload,
+  };
+  return response.payload;
+}
+
+async function getPatentes(): Promise<dataPatentes[] | null> {
+  try {
+    const patentes = await prisma.role.findMany({
+      orderBy: {
+        roleLevel: "desc",
+      },
+      include: {
+        profiles: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    // Busca as imagens dos usuários e as adiciona aos perfis
+    const patentesComImagens = await Promise.all(
+      patentes.map(async (patente) => {
+        const profilesComImagens = await Promise.all(
+          patente.profiles.map(async (profile) => {
+            const figureData = await getUserImage(profile.user);
+            return { ...profile, user: { ...profile.user, figureData } };
+          })
+        );
+        return { ...patente, profiles: profilesComImagens };
+      })
+    );
+
+    return patentesComImagens;
+  } catch (e) {
+    const error = e as AxiosError;
+    console.error("Erro ao buscar patentes com imagens de usuários:", error);
+    return null;
+  } finally {
+    prisma.$disconnect();
+  }
+}
+
+async function getUserImage(user: User): Promise<string> {
+  try {
+    const res = await fetch(
+      `https://www.habbo.com.br/api/public/users?name=${user.nick}`
+    );
+    const { figureString } = await res.json();
+    if (!figureString) {
+      return "https://www.habbo.com/habbo-imaging/avatarimage?size=l&figure=hr-3531-1395-37.hd-3092-10.ch-3077-1332-110.lg-285-110.sh-300-92.ea-3484.fa-1206-92.ca-1811.cc-3007-1332-1332&direction=2&head_direction=3&size=l&action=std";
+    }
+    return `https://www.habbo.com/habbo-imaging/avatarimage?size=l&figure=${figureString}&direction=2&head_direction=3&size=l&action=std`;
+  } catch (error) {
+    console.error("Erro ao buscar imagem do usuário:", error);
+    return "URL_PARA_IMAGEM_PADRAO_SE_ERRO";
+  }
+}
+
+interface dataPatentes {
+  id: number;
+  role: string;
+  roleLevel: number;
+  createdAt: Date;
+  profiles: dataProfiles[];
+}
+
+interface dataProfiles {
+  id: string;
+  tag: string | null;
+  salary: number;
+  warnings: number;
+  identity: string;
+  roleId: number;
+  companyId: number | null;
+  awardedId: number | null;
+  user: User;
+}
+
+type User = {
+  id: string;
+  nick: string;
+  email: string | null;
+  password: string | null;
+  createdAt: Date;
+  active: boolean;
+  figureData?: string; // Adicionando o campo para armazenar o URL da imagem do usuário
+};
+
+/* 
+{users?.map((user, index) => (
             <div
               key={index}
               className="flex flex-wrap justify-center items-center max-h-34 w-96 rounded-lg pb-0 max-sm:!pb-4 bg-slate-900 pr-8 pl-2"
@@ -112,138 +215,4 @@ export default async function UserList({
               </div>
             </div>
           ))}
-        </div>
-      </div>
-      <Pagination maxPage={maxPage} />
-    </div>
-  );
-}
-
-type User = {
-  nick: string;
-  active: boolean;
-  figureString: string;
-  Profile: {
-    role: {
-      role: string;
-    };
-  } | null;
-};
-
-type UserList = User[];
-
-async function getUsers({
-  page,
-}: {
-  page: number | undefined;
-}): Promise<User[] | null> {
-  var pageNumber = page || 1;
-  let skipValue;
-  if (pageNumber > 1) {
-    skipValue = pageNumber - 2 + 20;
-  } else {
-    skipValue = 0;
-  }
-  pageNumber < 1 && (pageNumber = 1);
-  try {
-    const users = await prisma.user.findMany({
-      skip: skipValue,
-      take: 20,
-      orderBy: [
-        {
-          Profile: {
-            role: {
-              roleLevel: "desc",
-            },
-          },
-        },
-        {
-          createdAt: "desc",
-        },
-      ],
-      select: {
-        nick: true,
-        active: true,
-        Profile: {
-          select: {
-            role: {
-              select: {
-                role: true,
-              },
-            },
-          },
-        },
-      },
-    });
-    const usersWithFigureStrings = await Promise.all(
-      users.map(async (user) => {
-        const { nick } = user;
-        const figureString = await getUserImage({ nick });
-        return { ...user, figureString };
-      })
-    );
-    return usersWithFigureStrings;
-  } catch (e) {
-    const error = e as AxiosError;
-    return null;
-  } finally {
-    prisma.$disconnect();
-  }
-}
-
-async function getUserInfo(): Promise<any> {
-  const cookieStore = cookies();
-
-  const token = cookieStore.get(COOKIE_NAME);
-
-  if (!token) return;
-
-  const { value } = token;
-  const secret = process.env.JWT_SECRET || "";
-
-  const payload = verify(value, secret);
-
-  const response = {
-    payload,
-  };
-  return response.payload;
-}
-
-async function getMaxPage() {
-  try {
-    const maxPage = await prisma.user.count();
-    return maxPage;
-  } catch (e) {
-    const error = e as AxiosError;
-    return null;
-  } finally {
-    prisma.$disconnect();
-  }
-}
-
-async function getUserImage({ nick }: { nick: string }) {
-  const res = await fetch(
-    `https://www.habbo.com.br/api/public/users?name=${nick}`
-  );
-  const { figureString } = await res.json();
-  if (figureString === undefined) {
-    return `https://cdn.discordapp.com/attachments/1205259247387025439/1205259311425527828/Z.png?ex=65d7b834&is=65c54334&hm=9a9496c65db40cd6d01f1ea00e891adf679ef32caa16517eafdff83318e74ca2&`;
-  }
-  return `https://www.habbo.com/habbo-imaging/avatarimage?size=l&figure=${figureString}&direction=2&head_direction=3&size=l&action=std`;
-}
-
-async function getPatentes(): Promise<Role[] | null> {
-  try {
-    const patentes = await prisma.role.findMany({
-      orderBy: {
-        roleLevel: "asc",
-      },
-    });
-    return patentes;
-  } catch (e) {
-    const error = e as AxiosError;
-    return null;
-  } finally {
-    prisma.$disconnect();
-  }
-}
+          */
