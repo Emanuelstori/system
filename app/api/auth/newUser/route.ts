@@ -1,7 +1,7 @@
 import prisma from "@/prisma/client";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { COOKIE_NAME } from "@/constants";
+import { COOKIE_NAME, minLevelCreateUser } from "@/constants";
 import { verify } from "jsonwebtoken";
 import HttpStatusCode from "@/utils/HttpStatusCode";
 import { v4 } from "uuid";
@@ -96,7 +96,7 @@ export async function POST(request: Request) {
     });
     if (
       !permissionUser?.Profile?.role.roleLevel ||
-      permissionUser?.Profile?.role.roleLevel < 5
+      permissionUser?.Profile?.role.roleLevel <= minLevelCreateUser
     ) {
       return NextResponse.json(
         {
