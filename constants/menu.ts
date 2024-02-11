@@ -11,8 +11,8 @@ export const menuItems = [
     title: "Departamentos",
     submenu: [
       {
-        title: "Lotas",
-        href: "/dashboard/departamentos/lotas",
+        title: "Marketing",
+        href: "/dashboard/departamentos/marketing",
       },
       {
         title: "Educacional",

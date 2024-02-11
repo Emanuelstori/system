@@ -1,14 +1,14 @@
 "use client";
 import { Dispatch, SetStateAction, useState } from "react";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import "./quill.buble.css";
 
 export default function TextEditor({
   value,
   setValue,
 }: {
-  value: string;
-  setValue: Dispatch<SetStateAction<string>>;
+  value: string | undefined;
+  setValue: Dispatch<SetStateAction<string | undefined>>;
 }) {
   var toolbarOptions = [
     ["bold", "italic", "underline", "strike"], // toggled buttons
@@ -28,11 +28,11 @@ export default function TextEditor({
     toolbar: toolbarOptions,
   };
   return (
-    <div className="overflow-y-auto min-h-60 max-h-60">
+    <div className="overflow-y-auto max-h-[50rem]">
       <ReactQuill
-        className="h-max bg-zinc-900"
+        className="bg-zinc-950 h-96 z-0 rounded"
         modules={modulos}
-        theme="snow"
+        theme="bubble"
         value={value}
         onChange={setValue}
       />

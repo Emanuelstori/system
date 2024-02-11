@@ -11,8 +11,11 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Tab,
+  Tabs,
   useDisclosure,
 } from "@nextui-org/react";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import Image from "next/image";
 import { ChangeEvent, useState } from "react";
@@ -21,6 +24,7 @@ import { IoNewspaper } from "react-icons/io5";
 import Pagination from "./Pagination";
 import { Post } from "@prisma/client";
 import { format } from "date-fns";
+import { ToastContainer, toast } from "react-toastify";
 const { ptBR } = require("date-fns/locale");
 
 export default function Posts({
@@ -30,10 +34,28 @@ export default function Posts({
   posts: Post[];
   maxPage: number;
 }) {
-  const [value, setValue] = useState("");
+  const [postTitle, setPostTitle] = useState("");
+  const [postDescription, setPostDescription] = useState("");
+  const [value, setValue] = useState<string | undefined>(undefined);
   const [imagePreview, setImagePreview] = useState<string | null>(
     "http://habbo.com.br/habbo-imaging/badge/b27114s02130s01110s43114s191141920f434b8b01fb17be50479af8878de.gif"
   );
+  const [selectedKey, setSelectedKey] = useState<"content" | "baseData">(
+    "baseData"
+  );
+  function handleNext() {
+    if (!postTitle || !postDescription) {
+      toast.error("Preencha os campos obrigatórios para prosseguir.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        theme: "dark",
+      });
+      return;
+    } else {
+      setTimeout(() => {
+        setSelectedKey("content");
+      }, 1);
+    }
+  }
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -45,35 +67,65 @@ export default function Posts({
       reader.readAsDataURL(file);
     }
   };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    //event.currentTarget.postTitle.value
-    //event.currentTarget.postDescription.value
+
     const payload: {
       title: string;
       content: string;
       image?: string;
       description: string;
     } = {
-      title: event.currentTarget.postTitle.value,
-      description: event.currentTarget.postDescription.value,
-      content: value,
+      title: postTitle,
+      description: postDescription,
+      content: value || "",
     };
 
-    if (event.currentTarget.postImage.files.lenght > 0) {
-      const imageGet = await getBase64Image(
-        event.currentTarget.postImage.files[0]
-      );
-      if (imageGet) {
-        payload.image = imageGet.toString();
-      }
+    if (!payload.title || !payload.content || !payload.description) {
+      toast.error("Parâmetros esperados.", {
+        position: toast.POSITION.BOTTOM_RIGHT,
+        theme: "dark",
+      });
+      return;
     }
-    await axios.post("/api/globalData/posts", payload);
+
+    const id = toast.loading("Criando Postagem...", {
+      position: toast.POSITION.BOTTOM_RIGHT,
+      theme: "dark",
+    });
+
+    if (imagePreview) {
+      payload.image = imagePreview;
+    }
+    try {
+      await axios.post("/api/globalData/posts", payload);
+      toast.update(id, {
+        render: "Criado com sucesso!",
+        type: "success",
+        isLoading: false,
+        theme: "dark",
+        autoClose: 5000,
+        closeButton: true,
+      });
+      onclose;
+    } catch (e) {
+      toast.update(id, {
+        render: "Algo deu errado!",
+        type: "error",
+        isLoading: false,
+        theme: "dark",
+        autoClose: 5000,
+        closeButton: true,
+      });
+      console.log(e);
+    }
   };
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl">
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="full">
         <ModalContent>
           {(onClose) => (
             <form onSubmit={handleSubmit}>
@@ -81,83 +133,119 @@ export default function Posts({
                 Criar Post
               </ModalHeader>
               <ModalBody>
-                <div className="flex">
-                  <div className="flex items-center justify-center relative">
-                    <label
-                      htmlFor="imageInput"
-                      className="relative cursor-pointer p-2 rounded-lg focus:outline-none focus:shadow-outline"
-                    >
-                      {imagePreview && (
-                        <div className="relative group">
-                          <div className="absolute inset-0 bg-black opacity-50 rounded flex items-center justify-center">
-                            <FaPencil className="text-white text-4xl" />
-                          </div>
-                          <img
-                            src={imagePreview}
-                            alt="Image Preview"
-                            className="w-56 max-h-56 rounded"
-                            style={{ objectFit: "contain" }}
+                <Tabs                
+                  selectedKey={selectedKey}
+                  aria-label="Options"
+                  variant="light"
+                  className="w-full justify-center h-full hidden"
+                >
+                  <Tab
+                    key="baseData"
+                    title="Informações básicas"
+                    className="w-full flex justify-center items-center"
+                  >
+                    <div className="flex">
+                      <div className="flex items-center justify-center relative">
+                        <label
+                          htmlFor="imageInput"
+                          className="relative cursor-pointer p-2 rounded-lg focus:outline-none focus:shadow-outline"
+                        >
+                          {imagePreview && (
+                            <div className="relative group">
+                              <div className="absolute inset-0 bg-black opacity-50 rounded flex items-center justify-center">
+                                <FaPencil className="text-white text-4xl" />
+                              </div>
+                              <div className="w-56 h-auto">
+                                <img
+                                  src={imagePreview}
+                                  alt="Image Preview"
+                                  className="w-56 max-h-56 rounded"
+                                  style={{ objectFit: "contain" }}
+                                />
+                              </div>
+                            </div>
+                          )}
+                          <input
+                            id="postImage"
+                            name="postImage"
+                            type="file"
+                            className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                          />
+                        </label>
+                      </div>
+                      <div className="flex flex-col w-96 gap-2">
+                        <div>
+                          <label
+                            htmlFor="titleInput"
+                            className="relative cursor-pointer p-2 rounded-lg focus:outline-none focus:shadow-outline"
+                          >
+                            Título:
+                          </label>
+                          <Input
+                            isRequired
+                            id="postTitle"
+                            name="postTitle"
+                            type="text"
+                            label="Título"
+                            value={postTitle}
+                            onChange={(e) => setPostTitle(e.target.value)}
                           />
                         </div>
-                      )}
-                      <input
-                        id="postImage"
-                        name="postImage"
-                        type="file"
-                        className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                      />
-                    </label>
-                  </div>
-                  <div className="flex flex-col w-96 gap-2">
-                    <div>
-                      <label
-                        htmlFor="titleInput"
-                        className="relative cursor-pointer p-2 rounded-lg focus:outline-none focus:shadow-outline"
-                      >
-                        Título:
-                      </label>
-                      <Input
-                        isRequired
-                        id="postTitle"
-                        name="postTitle"
-                        type="text"
-                        label="Título"
-                      />
+                        <div>
+                          <label
+                            htmlFor="descriptionInput"
+                            className="relative cursor-pointer p-2 rounded-lg focus:outline-none focus:shadow-outline"
+                          >
+                            Descrição:
+                          </label>
+                          <Input
+                            isRequired
+                            id="postDescription"
+                            name="postDescription"
+                            type="text"
+                            label="Descrição"
+                            value={postDescription}
+                            onChange={(e) => setPostDescription(e.target.value)}
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label
-                        htmlFor="descriptionInput"
-                        className="relative cursor-pointer p-2 rounded-lg focus:outline-none focus:shadow-outline"
-                      >
-                        Descrição:
-                      </label>
-                      <Input
-                        isRequired
-                        id="postDescription"
-                        name="postDescription"
-                        type="text"
-                        label="Descrição"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <label
-                  htmlFor="contentInput"
-                  className="relative cursor-pointer p-2 rounded-lg focus:outline-none focus:shadow-outline"
-                >
-                  Conteúdo
-                </label>
-                <TextEditor value={value} setValue={setValue} />
+                  </Tab>
+                  <Tab
+                    key="content"
+                    title="Conteúdo"
+                    className="w-full flex flex-grow flex-col"
+                  >
+                    <TextEditor value={value} setValue={setValue} />
+                  </Tab>
+                </Tabs>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Fechar
-                </Button>
-                <Button color="primary" type="submit">
-                  Postar
-                </Button>
+                {selectedKey === "content" ? (
+                  <Button
+                    color="danger"
+                    variant="light"
+                    onPress={() => setSelectedKey("baseData")}
+                  >
+                    Voltar
+                  </Button>
+                ) : (
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Fechar
+                  </Button>
+                )}
+
+                {selectedKey === "content" ? (
+                  <Button color="primary" type="submit">
+                    Postar
+                  </Button>
+                ) : (
+                  <Button color="primary" onClick={handleNext}>
+                    Próximo
+                  </Button>
+                )}
               </ModalFooter>
             </form>
           )}
@@ -196,7 +284,7 @@ export default function Posts({
                 </div>
               </div>
               <div className="w-full max-sm:items-start max-sm:px-4 flex flex-col gap-3 items-center justify-center">
-                <div className="flex flex-col gap-1">
+                <div className="flex w-full px-3 flex-col gap-1">
                   <h1 className="font-bold">{item.title}</h1>
                   <p className="text-xs">{`${format(
                     item.createdAt,
@@ -267,6 +355,7 @@ export default function Posts({
         <Pagination maxPage={maxPage} />
       </div>
       {/* FIM POSTS */}
+      <ToastContainer className="absolute" autoClose={5000} />
     </>
   );
 }
