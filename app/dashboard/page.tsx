@@ -1,14 +1,14 @@
 "use server";
 
 import { COOKIE_NAME } from "@/constants";
-import Destaques from "../../components/Listagem/Destaques/index";
-import Alertas from "@/components/Listagem/Alertas";
-import Avisos from "@/components/Listagem/Avisos";
-import Ranking from "@/components/Listagem/Ranking";
-import Posts from "@/components/Listagem/Posts";
+import Destaques from "@/components/DashboardPage/Destaques/index";
+import Alertas from "@/components/DashboardPage/Alertas";
+import Avisos from "@/components/DashboardPage/Avisos";
+import Ranking from "@/components/DashboardPage/Ranking";
+import Posts from "@/components/DashboardPage/Posts";
 import { cookies } from "next/headers";
 import { verify } from "jsonwebtoken";
-import SearchBox from "@/components/SearchBox/index";
+import SearchBox from "@/components/DashboardPage/SearchBox/index";
 import prisma from "@/prisma/client";
 import { Post } from "@prisma/client";
 

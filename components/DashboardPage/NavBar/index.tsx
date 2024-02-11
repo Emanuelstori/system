@@ -15,10 +15,11 @@ import {
 } from "@nextui-org/react";
 import { ChevronDown } from "./Icons";
 import { AcmeLogo } from "./AcmeLogo";
-import UserArea from "../UserArea";
+import UserArea from "./UserArea";
 import { useRouter } from "next/navigation";
 import { UserDataFiltred } from "@/Types/UserType";
 import axios, { AxiosError } from "axios";
+import { menuItems } from "@/constants/menu";
 
 export default function NavBar({
   isMenuOpen,
@@ -40,68 +41,6 @@ export default function NavBar({
       />
     ),
   };
-
-  const menuItems = [
-    {
-      title: "Início",
-      href: "/dashboard/",
-    },
-    {
-      title: "Listagem",
-      href: "/dashboard/listagem",
-    },
-    {
-      title: "Departamentos",
-      submenu: [
-        {
-          title: "Lotas",
-          href: "/dashboard/departamentos/lotas",
-        },
-        {
-          title: "Educacional",
-          href: "/dashboard/departamentos/educacional",
-        },
-        {
-          title: "Recursos Humanos",
-          href: "/dashboard/departamentos/rh",
-        },
-      ],
-    },
-    {
-      title: "Requerimentos",
-      submenu: [
-        {
-          title: "TAGs",
-          href: "/dashboard/departamentos/educacional",
-        },
-        {
-          title: "Licença",
-          href: "/dashboard/departamentos/lotas",
-        },
-        {
-          title: "Exoneração",
-          href: "/dashboard/departamentos/educacional",
-        },
-        {
-          title: "Transferência de conta",
-          href: "/dashboard/departamentos/educacional",
-        },
-      ],
-    },
-    {
-      title: "Documentos",
-      submenu: [
-        {
-          title: "Estatuto",
-          href: "/dashboard/departamentos/lotas",
-        },
-        {
-          title: "Código Penal",
-          href: "/dashboard/departamentos/educacional",
-        },
-      ],
-    },
-  ];
 
   return (
     <Navbar
@@ -142,7 +81,7 @@ export default function NavBar({
                       <Button
                         disableRipple
                         size="lg"
-                        className="p-0 bg-transparent data-[hover=true]:bg-transparent"
+                        className="p-0 w-40 bg-transparent data-[hover=true]:bg-transparent"
                         endContent={icons.chevron}
                         radius="sm"
                         variant="light"
@@ -161,7 +100,7 @@ export default function NavBar({
                       <DropdownItem
                         href={itemSubMenu.href}
                         key={index}
-                        className="w-52"
+                        className="w-40"
                       >
                         {itemSubMenu.title}
                       </DropdownItem>

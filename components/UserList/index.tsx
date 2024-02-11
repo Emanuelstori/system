@@ -1,18 +1,13 @@
 "use server";
 import { AxiosError } from "axios";
 import prisma from "@/prisma/client";
-import { BsShieldFillCheck, BsShieldFillX } from "react-icons/bs";
 import { cookies } from "next/headers";
-import { COOKIE_NAME, minLevelCreateUser, minLevelEditUser } from "@/constants";
+import { COOKIE_NAME, minLevelCreateUser } from "@/constants";
 import { verify } from "jsonwebtoken";
-import Pagination from "./Pagination";
-import ButtonSeeProfile from "@/components/ButtonSeeProfile";
-import ButtonEditProfile from "../ButtonEditProfile";
 import { createUser } from "./actions";
 import UserCreation from "./UserCreation/index";
 import CreateUserbutton from "./UserCreation/CreateUserbutton";
 import CloseModalButton from "./UserCreation/CloseModalButton";
-import { Profile, Role } from "@prisma/client";
 import List from "./List/List";
 
 export default async function UserList({ showModal }: { showModal?: boolean }) {

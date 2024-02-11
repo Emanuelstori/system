@@ -1,16 +1,11 @@
 "use server";
 
 import prisma from "@/prisma/client";
-import VerticalTimeLine from "@/components/ProfilePage/VerticalTimeLine";
-import TextEditor from "@/components/TextEditor/index";
-import { BsShieldFillX } from "react-icons/bs";
-import { FaCreditCard, FaAddressCard, FaPencilAlt } from "react-icons/fa";
-import UserEdit from "@/components/Profile/UserEdit";
-import UserInfo from "@/components/Profile/UserInfo";
+import UserInfo from "@/components/ProfilePage/UserInfo";
 import { format } from "date-fns";
 
-import Identificacao from "@/components/Profile/Identificacao";
-import UserDataTimes from "@/components/Profile/UserDataTimes";
+import Identificacao from "@/components/ProfilePage/Identificacao";
+import UserDataTimes from "@/components/ProfilePage/UserDataTimes";
 const { ptBR } = require("date-fns/locale");
 
 export default async function Page({

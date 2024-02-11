@@ -1,4 +1,4 @@
-import Menu from "@/components/Departamentos/Menu/index";
+import Menu from "@/components/DepartamentosPage/Menu/index";
 export default async function DepartamentosLayout({
   children,
 }: {

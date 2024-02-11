@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@nextui-org/react";
 import { UserDataFiltred, UserResponse } from "@/Types/UserType";
-import NavBar from "@/components/NavBar";
+import NavBar from "@/components/DashboardPage/NavBar";
 import UserProvider from "@/providers/UserProvider";
 
 export default function DashboardLayout({

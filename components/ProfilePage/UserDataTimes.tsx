@@ -2,9 +2,7 @@
 
 import { Tabs, Tab } from "@nextui-org/react";
 import { RelatoryType } from "@prisma/client";
-import { format } from "date-fns";
-import VerticalTimeLine from "../ProfilePage/VerticalTimeLine";
-const { ptBR } = require("date-fns/locale");
+import VerticalTimeLine from "./Timeline/VerticalTimeLine";
 
 export default function UserDataTimes({
   relatories,
@@ -15,7 +13,11 @@ export default function UserDataTimes({
 }) {
   return (
     <div className="flex w-full flex-col items-center border-b-1 border-black px-4">
-      <Tabs aria-label="Options" variant="light" className="w-full flex justify-center">
+      <Tabs
+        aria-label="Options"
+        variant="light"
+        className="w-full flex justify-center"
+      >
         <Tab key="timeline" title="Linha do tempo" className="w-full">
           <VerticalTimeLine
             relatories={userData.Profile?.targetedRelatories}

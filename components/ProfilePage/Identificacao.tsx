@@ -1,6 +1,6 @@
 "use client";
 import { Snippet } from "@nextui-org/react";
-import { CopyIcon } from "@/components/CopyIcon";
+import CopyIcon from "./CopyIcon";
 export default function Identificacao({ text }: { text: string }) {
   return (
     <Snippet

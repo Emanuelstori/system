@@ -14,10 +14,10 @@ import { GiPoliceOfficerHead } from "react-icons/gi";
 import { CiLogout } from "react-icons/ci";
 import { FaGear } from "react-icons/fa6";
 import { UserDataFiltred } from "@/Types/UserType";
-import DeleteCookie from "../DeleteCookie";
+import DeleteCookie from "@/utils/DeleteCookie";
 import { COOKIE_NAME } from "@/constants";
 import { useRouter } from "next/navigation";
-import PlaySound from "../PlaySound";
+import PlaySound from "../../../PlaySound";
 import { useEffect, useState } from "react";
 
 export default function UserArea({
