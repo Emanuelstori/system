@@ -252,7 +252,7 @@ export default function Posts({
         </ModalContent>
       </Modal>
       {/* INICIO POSTS */}
-      <div className="flex flex-col gap-2 w-fit items-start">
+      <div className="flex flex-col gap-2 flex-grow items-start">
         <div className="flex justify-between w-full">
           <h1 className="flex gap-2 px-2 text-xl items-center">
             <IoNewspaper /> Posts
@@ -261,7 +261,7 @@ export default function Posts({
             <FaPlus />
           </Button>
         </div>
-        <div className="w-fit flex flex-wrap gap-8 justify-start">
+        <div className="w-full flex flex-wrap gap-8 justify-start">
           {posts.map((item, index) => (
             <div
               key={index}
