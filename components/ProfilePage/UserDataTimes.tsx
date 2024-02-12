@@ -4,6 +4,7 @@ import { Tabs, Tab } from "@nextui-org/react";
 import { RelatoryType } from "@prisma/client";
 import VerticalTimeLine from "./Timeline/VerticalTimeLine";
 
+
 export default function UserDataTimes({
   relatories,
   userData,
@@ -31,6 +32,7 @@ export default function UserDataTimes({
           <div></div>
         </Tab>
       </Tabs>
+      
     </div>
   );
 }

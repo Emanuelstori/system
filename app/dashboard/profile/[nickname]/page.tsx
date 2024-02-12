@@ -3,10 +3,14 @@
 import prisma from "@/prisma/client";
 import UserInfo from "@/components/ProfilePage/UserInfo";
 import { format } from "date-fns";
-
+import SetPoints from "@/components/SetPoints/SetPoints";
 import Identificacao from "@/components/ProfilePage/Identificacao";
 import UserDataTimes from "@/components/ProfilePage/UserDataTimes";
 const { ptBR } = require("date-fns/locale");
+import { minLevelEditUser } from "@/constants";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+
 
 export default async function Page({
   params,
@@ -27,9 +31,15 @@ export default async function Page({
     `https://www.habbo.com.br/api/public/users?name=${userData.nick}`
   );
   const { figureString, online } = await res.json();
+  let renderSetPoint: boolean = false;
+
+  if (userData.Profile?.role && userData.Profile.role.roleLevel >= minLevelEditUser) {
+    renderSetPoint = true;
+  }
+
   return (
     <div className="w-full px-8 py-4">
-      <div className="flex w-full justify-center gap-16">
+      <div className={renderSetPoint ? "flex w-full justify-around gap-1 flex-wrap" : "flex w-full justify-center gap-16 flex-wrap"}>
         <div className="flex w-fit h-fit">
           <div className="flex flex-col w-96 bg-white rounded-md text-black font-bold">
             <div className="flex justify-center p-3 w-full border-b-1 bg-blue-400 rounded-t-md border-black">
@@ -58,11 +68,10 @@ export default async function Page({
 
                   <div className="w-full text-black font-normal text-sm flex p-2 justify-between items-center bg-white">
                     <Identificacao
-                      text={`${userData.nick} [${
-                        userData.Profile!.tag
-                      }] ${format(userData.createdAt, "dd MMM yyyy", {
-                        locale: ptBR,
-                      })}`}
+                      text={`${userData.nick} [${userData.Profile!.tag
+                        }] ${format(userData.createdAt, "dd MMM yyyy", {
+                          locale: ptBR,
+                        })}`}
                     />
                   </div>
                 </div>
@@ -76,7 +85,15 @@ export default async function Page({
             userData={userData}
           />
         </div>
+
+        {renderSetPoint ? (
+          <SetPoints userData={userData} />
+        ) : (
+          <div style={{ display: 'none' }}></div>
+        )}
+
       </div>
+      <ToastContainer className="absolute" autoClose={5000} />
     </div>
   );
 }
@@ -95,9 +112,12 @@ async function getUserData({ nickname }: { nickname: string }) {
           select: {
             tag: true,
             salary: true,
+            points: true,
+            id: true,
             role: {
               select: {
                 role: true,
+                roleLevel: true,
               },
             },
             targetedRelatories: {
