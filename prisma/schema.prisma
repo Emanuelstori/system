@@ -85,6 +85,7 @@ enum RelatoryType {
   WARNING
   ROLE_CREATION
   ROLE_BUY
+  GET_DAILY_PRESENCE
 }
 
 model Relatory {
