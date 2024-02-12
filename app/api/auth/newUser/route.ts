@@ -94,9 +94,10 @@ export async function POST(request: Request) {
         },
       },
     });
+
     if (
       !permissionUser?.Profile?.role.roleLevel ||
-      permissionUser?.Profile?.role.roleLevel <= minLevelCreateUser
+      !(permissionUser?.Profile?.role.roleLevel >= minLevelCreateUser)
     ) {
       return NextResponse.json(
         {
