@@ -2,9 +2,9 @@
 
 import { Button } from "@nextui-org/react";
 
-export default function Botao(){
+export default function Botao() {
     return (
-        <Button type="submit" color="success">
+        <Button className="w-96 text-white" type="submit" color="success">
             Resgatar Presença
         </Button>
     )
