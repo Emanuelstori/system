@@ -4,6 +4,7 @@ import { COOKIE_NAME } from "@/constants";
 import prisma from "@/prisma/client";
 import HttpStatusCode from "@/utils/HttpStatusCode";
 import axios from "axios";
+import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -30,6 +31,7 @@ export async function insertPoint(formData: FormData) {
                 },
             }
         );
+        revalidatePath('/dashboard', 'page');
     } catch (e) {
 
     } finally {
