@@ -58,7 +58,7 @@ export default async function DashboardPage({
 
           <Ranking />
         </div>
-        <div className="flex w-full mt-4 justify-center md:justify-between h-fit items-start gap-16 flex-wrap md:!flex-nowrap">
+        <div className="flex w-full mt-4 justify-center md:justify-between h-fit items-start gap-16 flex-wrap-reverse md:!flex-nowrap">
           <Posts posts={posts} maxPage={maxPage} />
           <Destaques />
         </div>
