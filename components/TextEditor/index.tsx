@@ -1,7 +1,7 @@
 "use client";
 import { Dispatch, SetStateAction, useState } from "react";
 import ReactQuill from "react-quill";
-import "./quill.buble.css";
+import "./quill.snow.css";
 
 export default function TextEditor({
   value,
@@ -30,9 +30,9 @@ export default function TextEditor({
   return (
     <div className="overflow-y-auto max-h-[50rem]">
       <ReactQuill
-        className="bg-zinc-950 h-96 z-0 rounded"
+        className="bg-white text-black h-96 z-0 rounded"
         modules={modulos}
-        theme="bubble"
+        theme="snow"
         value={value}
         onChange={setValue}
       />

@@ -119,6 +119,9 @@ async function getPosts({ page }: { page: number }): Promise<Post[]> {
     const posts = await prisma.post.findMany({
       skip: skipValue,
       take: 5,
+      orderBy: {
+        createdAt: "desc",
+      },
     });
     return posts;
   } catch (e) {

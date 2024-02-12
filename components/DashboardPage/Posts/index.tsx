@@ -19,12 +19,13 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import Image from "next/image";
 import { ChangeEvent, useState } from "react";
-import { FaLeftLong, FaPencil, FaPlus, FaRightLong } from "react-icons/fa6";
+import { FaPencil, FaPlus } from "react-icons/fa6";
 import { IoNewspaper } from "react-icons/io5";
 import Pagination from "./Pagination";
 import { Post } from "@prisma/client";
 import { format } from "date-fns";
 import { ToastContainer, toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 const { ptBR } = require("date-fns/locale");
 
 export default function Posts({
@@ -43,6 +44,8 @@ export default function Posts({
   const [selectedKey, setSelectedKey] = useState<"content" | "baseData">(
     "baseData"
   );
+  const router = useRouter();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   function handleNext() {
     if (!postTitle || !postDescription) {
       toast.error("Preencha os campos obrigatórios para prosseguir.", {
@@ -107,8 +110,9 @@ export default function Posts({
         theme: "dark",
         autoClose: 5000,
         closeButton: true,
-      });
-      onclose;
+      });      
+      onClose();
+      router.refresh();
     } catch (e) {
       toast.update(id, {
         render: "Algo deu errado!",
@@ -122,7 +126,6 @@ export default function Posts({
     }
   };
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="full">
@@ -133,7 +136,7 @@ export default function Posts({
                 Criar Post
               </ModalHeader>
               <ModalBody>
-                <Tabs                
+                <Tabs
                   selectedKey={selectedKey}
                   aria-label="Options"
                   variant="light"

@@ -2,11 +2,12 @@
 
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { RxUpdate } from "react-icons/rx";
 import { toast } from "react-toastify";
-
 export default function SetPoints(userData: any) {
+    const router = useRouter();
     const options = [
         {
             value: "Adicionar",
@@ -63,6 +64,7 @@ export default function SetPoints(userData: any) {
                 autoClose: 5000,
                 closeButton: true,
             });
+            router.refresh();
             onclose;
         } catch (e) {
             toast.update(id, {

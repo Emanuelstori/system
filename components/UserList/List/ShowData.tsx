@@ -1,6 +1,7 @@
 "use client";
 import { Transition } from "@headlessui/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function ShowData({
   profiles,
@@ -9,6 +10,7 @@ export default function ShowData({
   profiles: dataProfiles[];
   isOpen: boolean;
 }) {
+  const route = useRouter();
   return (
     <>
       <Transition
@@ -25,7 +27,8 @@ export default function ShowData({
             {profiles.map((profile, index) => (
               <div
                 key={index}
-                className="flex flex-col justify-center items-center w-fit p-2"
+                className="flex flex-col justify-center items-center w-fit p-2 hover:cursor-pointer"
+                onClick={()=>route.push(`/dashboard/profile/${profile.user.nick}`)}
               >
                 <div className="relative h-20 w-20">
                   <Image
