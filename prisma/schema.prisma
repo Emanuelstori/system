@@ -20,7 +20,7 @@ model Profile {
   user                  User            @relation(fields: [id], references: [id], onDelete: Cascade)
   roleId                Int
   role                  Role            @relation(fields: [roleId], references: [id])
-  points                Int?
+  points                Int             @default(0)
   companyId             Int?
   company               CompanyRole?    @relation(fields: [companyId], references: [id])
   authoredRelatories    Relatory[]      @relation("RelatoryAuthor")
