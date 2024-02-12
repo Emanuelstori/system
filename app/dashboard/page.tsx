@@ -12,6 +12,7 @@ import SearchBox from "@/components/DashboardPage/SearchBox/index";
 import prisma from "@/prisma/client";
 import { Post } from "@prisma/client";
 import BotaoPresenca from "@/components/DashboardPage/BotaoPresenca";
+import { ToastContainer } from "react-toastify";
 
 export default async function DashboardPage({
   searchParams,
@@ -63,6 +64,7 @@ export default async function DashboardPage({
         </div>
       </div>
       <div></div>
+      <ToastContainer className="absolute" autoClose={5000} />
     </div>
   );
 }
