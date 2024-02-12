@@ -11,6 +11,7 @@ import { verify } from "jsonwebtoken";
 import SearchBox from "@/components/DashboardPage/SearchBox/index";
 import prisma from "@/prisma/client";
 import { Post } from "@prisma/client";
+import BotaoPresenca from "@/components/DashboardPage/BotaoPresenca";
 
 export default async function DashboardPage({
   searchParams,
@@ -50,6 +51,7 @@ export default async function DashboardPage({
         </div>
         <div className="flex w-full mt-4 justify-center md:justify-between h-fit items-start gap-2 flex-wrap md:!flex-nowrap">
           <Avisos />
+          <BotaoPresenca />
           <Ranking />
         </div>
         <div className="flex w-full mt-4 justify-center md:justify-between h-fit items-start gap-2 flex-wrap md:!flex-nowrap">
