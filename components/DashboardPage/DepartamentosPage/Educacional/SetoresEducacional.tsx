@@ -7,7 +7,7 @@ import { Suspense } from "react";
 export default function SetoresEducacional() {
   const router = useRouter();
   return (
-    <div className="w-full bg-opacity-50 h-fit p-2 flex gap-4 justify-around">
+    <div className="w-full max-sm:mt-4 bg-opacity-50 h-fit p-2 flex flex-wrap gap-4 justify-around">
       <div
         onClick={() =>
           router.push("/dashboard/departamentos/educacional/guias")
