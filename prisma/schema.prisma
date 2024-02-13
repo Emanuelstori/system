@@ -21,8 +21,7 @@ model Profile {
   roleId                Int
   role                  Role            @relation(fields: [roleId], references: [id])
   points                Int             @default(0)
-  companyId             Int?
-  company               CompanyRole?    @relation(fields: [companyId], references: [id])
+  company               CompanyRole[]   @relation()
   authoredRelatories    Relatory[]      @relation("RelatoryAuthor")
   targetedRelatories    Relatory[]      @relation("RelatoryTarget")
   sentNotifications     Notifications[] @relation("NotificationAuthor")
@@ -55,7 +54,7 @@ model Role {
 model CompanyRole {
   id        Int       @id @default(autoincrement())
   idRel     Int?      @unique
-  role      String    @default("firstRole")
+  role      String    @default("Membro")
   company   Company   @relation(fields: [companyId], references: [id])
   profiles  Profile[]
   companyId Int
