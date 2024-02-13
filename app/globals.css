@@ -19,5 +19,6 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  @apply bg-gradient-radial from-zinc-900 to-zinc-950;
+  background-image: url('/background_image.png');
+  background-repeat: repeat;
 }
