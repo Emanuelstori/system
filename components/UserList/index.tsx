@@ -65,16 +65,24 @@ async function getUserInfo(): Promise<any> {
   return response.payload;
 }
 
-async function getPatentes(): Promise<dataPatentes[] | null> {
+async function getPatentes(): Promise<PatenteComImagem[] | null> {
   try {
     const patentes = await prisma.role.findMany({
       orderBy: {
         roleLevel: "desc",
       },
-      include: {
+      select: {
+        id: true,
+        createdAt: true,
+        role: true,
+        roleLevel: true,
         profiles: {
-          include: {
-            user: true,
+          select: {
+            user: {
+              select: {
+                nick: true,
+              },
+            },
           },
         },
       },
@@ -119,36 +127,19 @@ async function getUserImage(user: User): Promise<string> {
   }
 }
 
-interface dataPatentes {
+type PatenteComImagem = {
+  profiles: {
+    user: User;
+  }[];
   id: number;
+  createdAt: Date;
   role: string;
   roleLevel: number;
-  createdAt: Date;
-  profiles: dataProfiles[];
-}
-
-interface dataProfiles {
-  id: string;
-  tag: string | null;
-  salary: number;
-  warnings: number;
-  identity: string;
-  roleId: number;
-  companyId: number | null;
-  awardedId: number | null;
-  user: User;
-}
-
-type User = {
-  id: string;
-  nick: string;
-  email: string | null;
-  password: string | null;
-  createdAt: Date;
-  active: boolean;
-  figureData?: string; // Adicionando o campo para armazenar o URL da imagem do usuário
 };
-
+type User = {
+  figureData?: string;
+  nick: string;
+};
 /* 
 {users?.map((user, index) => (
             <div

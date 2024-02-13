@@ -7,7 +7,7 @@ export default function ShowData({
   profiles,
   isOpen,
 }: {
-  profiles: dataProfiles[];
+  profiles: Profiles[];
   isOpen: boolean;
 }) {
   const route = useRouter();
@@ -28,7 +28,9 @@ export default function ShowData({
               <div
                 key={index}
                 className="flex flex-col justify-center items-center w-fit p-2 hover:cursor-pointer"
-                onClick={()=>route.push(`/dashboard/profile/${profile.user.nick}`)}
+                onClick={() =>
+                  route.push(`/dashboard/profile/${profile.user.nick}`)
+                }
               >
                 <div className="relative h-20 w-20">
                   <Image
@@ -48,25 +50,10 @@ export default function ShowData({
     </>
   );
 }
-
-interface dataProfiles {
-  id: string;
-  tag: string | null;
-  salary: number;
-  warnings: number;
-  identity: string;
-  roleId: number;
-  companyId: number | null;
-  awardedId: number | null;
-  user: User;
-}
-
 type User = {
-  id: string;
+  figureData?: string;
   nick: string;
-  email: string | null;
-  password: string | null;
-  createdAt: Date;
-  active: boolean;
-  figureData?: string; // Adicionando o campo para armazenar o URL da imagem do usuário
+};
+type Profiles = {
+  user: User;
 };

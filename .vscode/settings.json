@@ -5,10 +5,7 @@
         "**/.hg": true,
         "**/CVS": true,
         "**/.DS_Store": true,
-        "**/Thumbs.db": true,
-        "node_modules": true,
-        ".next": true,
-        ".vscode": true
+        "**/Thumbs.db": true
     },
     "hide-files.files": [
         "node_modules",
