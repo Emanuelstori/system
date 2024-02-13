@@ -5,11 +5,11 @@ export default async function DepartamentosLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="max-w-screen">
+    <div className="max-w-screen w-full">
       <div className="flex w-full max-w-screen overflow-hidden p-8">
-        <Menu />
+        {/*<Menu />*/}
         {children}
       </div>
-    </main>
+    </div>
   );
 }

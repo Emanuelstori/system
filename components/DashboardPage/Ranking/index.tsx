@@ -67,7 +67,7 @@ export default function Ranking() {
                       objectFit: "cover",
                       objectPosition: "50% 50%",
                     }}
-                    src={`https://www.habbo.com/habbo-imaging/avatarimage?size=l&figure=hr-3829-42.hd-180-1.ch-210-1408.lg-285-64.sh-300-64.ea-3484.cc-260-1408&direction=3&head_direction=3&headonly=1`}
+                    src={`https://www.habbo.com/habbo-imaging/avatar/hr-3829-42.hd-180-1.ch-210-1408.lg-285-64.sh-300-64.ea-3484.cc-260-1408%2Cs-0.g-1.d-2.h-2.a-0%2C3f6f76a730973ea9de59c1e98206b6ee.png 1x,/habbo-imaging/avatar/hr-3829-42.hd-180-1.ch-210-1408.lg-285-64.sh-300-64.ea-3484.cc-260-1408%2Cs-4.g-1.d-2.h-2.a-0%2Cf26f4bbd621f35941853c8fab252e3ea.png 2x`}
                     alt={""}
                   />
                 </div>

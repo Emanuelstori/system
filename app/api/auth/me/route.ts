@@ -8,8 +8,6 @@ export async function GET() {
 
   const token = cookieStore.get(COOKIE_NAME);
 
-  console.log("token: " + token);
-
   if (!token) {
     return NextResponse.json(
       {
