@@ -25,6 +25,8 @@ export async function POST(request: Request) {
     );
     const test = await exists.json();
     if (!exists || test.error) {
+      console.log(exists);
+      console.log(test);
       return NextResponse.json(
         {
           message: "Not Found",
@@ -159,6 +161,7 @@ export async function POST(request: Request) {
     }
     const response = {
       id: user.id,
+      nick: user.nick,
       message: "Created",
     };
     return new Response(JSON.stringify(response), {

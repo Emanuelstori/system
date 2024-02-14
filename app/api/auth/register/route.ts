@@ -52,7 +52,32 @@ export async function POST(request: Request) {
       },
     });
 
-    if (!verifyExists) {
+    if (!verifyExists || verifyExists.active) {
+      return NextResponse.json(
+        {
+          message: "Precondition Failed",
+        },
+        {
+          status: 412,
+        }
+      );
+    }
+
+    const canActivate = await prisma.relatory.findFirst({
+      where: {
+        relatoryType: "USER_ACCESS",
+        targets: {
+          some: {
+            id: verifyExists.id,
+          },
+        },
+      },
+      select: {
+        accepted: true,
+      },
+    });
+    if (!canActivate || !canActivate.accepted) {
+      console.log(canActivate);
       return NextResponse.json(
         {
           message: "Precondition Failed",
@@ -83,6 +108,33 @@ export async function POST(request: Request) {
         }
       );
     }
+
+    const relatoryUpdate = await prisma.relatory.updateMany({
+      where: {
+        relatoryType: "USER_ACCESS",
+        targets: {
+          some: {
+            id: verifyExists.id,
+          },
+        },
+      },
+      data: {
+        title: `${verifyExists.nick} Se cadastrou no system!`,
+        description: `Foi nessa data especial que ${verifyExists.nick} se cadastrou em nosso system!`,
+      },
+    });
+//Foi nessa data especial que DEPOSIT0 se cadastrou em nosso system!
+    if (!relatoryUpdate) {
+      return NextResponse.json(
+        {
+          message: "Precondition Failed",
+        },
+        {
+          status: 412,
+        }
+      );
+    }
+
     const response = {
       message: "Created",
     };

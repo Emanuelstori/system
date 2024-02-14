@@ -28,11 +28,15 @@ export async function createUser(formData: FormData) {
         },
       }
     );
+    if (!createdUser) {
+      return false;
+    }
+    console.log(createdUser);
     const relatoryFormData = {
-      title: "ainda não se cadastrou :(",
+      title: `${createdUser.data.nick} ainda não se cadastrou :(`,
       relatoryType: "USER_ACCESS",
       targetProfileIds: [createdUser.data.id],
-      description: "ainda não se cadastrou em nosso system.",
+      description: "Ainda não se cadastrou em nosso system.",
     };
     const relatory = await axios.post(
       `http://${domain}/api/relatories`,

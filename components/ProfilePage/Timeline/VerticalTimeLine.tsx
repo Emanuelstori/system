@@ -151,7 +151,7 @@ export default function verticalTimeLine({
                   variant="h6"
                   component="span"
                 >
-                  {userData.nick} {item.title}
+                  {item.title}
                 </Typography>
                 <Typography align="left" className="!text-justify">
                   {item.description}
