@@ -28,9 +28,11 @@ model Profile {
   receivedNotifications Notifications[] @relation("NotificationTarget")
   posts                 Post[]          @relation("PostAuthor")
   watchedPosts          Post[]          @relation("WatchedPosts")
+  classes               Classes[]       @relation("ClassAuthor")
   Awarded               Awarded?        @relation(fields: [awardedId], references: [id], onDelete: Cascade)
   awardedId             Int?
   Alert                 Alert[]         @relation("AlertAuthor")
+  Documents             Documents[]     @relation("DocumentAuthor")
 }
 
 model User {
@@ -59,6 +61,7 @@ model CompanyRole {
   profiles  Profile[]
   companyId Int
   createdAt DateTime  @default(now()) @db.Timestamp(6)
+  Classes   Classes[] @relation("ClassAplicator")
 }
 
 model Company {
@@ -145,4 +148,25 @@ model Alert {
   alertedBy Profile  @relation("AlertAuthor", fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
   createdAt DateTime @default(now()) @db.Timestamp(6)
+}
+
+model Classes {
+  id              Int         @id @default(autoincrement())
+  title           String
+  description     String
+  content         String
+  author          Profile     @relation("ClassAuthor", fields: [authorId], references: [id])
+  applicatorRole  CompanyRole @relation("ClassAplicator", fields: [aplicatorRoleId], references: [id])
+  aplicatorRoleId Int
+  createdAt       DateTime    @default(now()) @db.Timestamp(6)
+  authorId        String
+}
+
+model Documents {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String
+  content     String
+  author      Profile @relation("DocumentAuthor", fields: [authorId], references: [id])
+  authorId    String
 }

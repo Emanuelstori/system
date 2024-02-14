@@ -55,7 +55,7 @@ export default async function EducacitionalPage() {
             {""}
           </div>
         </div>
-        <div className="flex flex-col max-sm:w-full w-72 gap-8 h-full">
+        <div className="flex xl:flex-col max-xl:w-full w-72 gap-8 h-full max-xl:justify-around">
           <RankingEducacional title="Ranking Guias:" />
           <RankingEducacional title="Ranking Instrutores:" />
           <RankingEducacional title="Ranking Treinadores:" />

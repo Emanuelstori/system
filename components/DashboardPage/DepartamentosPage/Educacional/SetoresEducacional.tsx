@@ -3,12 +3,14 @@
 import { Skeleton } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
+import PlaySound from "../../../PlaySound";
 
 export default function SetoresEducacional() {
   const router = useRouter();
   return (
     <div className="w-full max-sm:mt-4 bg-opacity-50 h-fit p-2 flex flex-wrap gap-4 justify-around">
       <div
+        onMouseEnter={PlaySound}
         onClick={() =>
           router.push("/dashboard/departamentos/educacional/guias")
         }
@@ -36,6 +38,7 @@ export default function SetoresEducacional() {
         </div>
       </div>
       <div
+        onMouseEnter={PlaySound}
         onClick={() =>
           router.push("/dashboard/departamentos/educacional/guias")
         }
@@ -63,6 +66,7 @@ export default function SetoresEducacional() {
         </div>
       </div>
       <div
+        onMouseEnter={PlaySound}
         onClick={() =>
           router.push("/dashboard/departamentos/educacional/guias")
         }
