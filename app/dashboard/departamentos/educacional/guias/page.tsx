@@ -17,7 +17,11 @@ export default async function EducacitionalPage() {
   if (!userList || !roles || !currentUser) {
     redirect("/dashboard/departamentos/educacional");
   }
-  if (currentUser?.Profile?.role.roleLevel) {
+  if (
+    currentUser &&
+    currentUser.Profile &&
+    currentUser.Profile.role.roleLevel >= 1000
+  ) {
     success = true;
     return;
   }
