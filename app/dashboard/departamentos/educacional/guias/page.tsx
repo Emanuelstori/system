@@ -1,107 +1,131 @@
+import ActionButtons from "@/components/DashboardPage/DepartamentosPage/Educacional/Guias/ActionButtons";
+import Cards from "@/components/DashboardPage/DepartamentosPage/Educacional/Guias/Cards";
+import Memberlist from "@/components/DashboardPage/DepartamentosPage/Educacional/Guias/Memberlist";
+import { COOKIE_NAME } from "@/constants";
+import prisma from "@/prisma/client";
+import { getUserData } from "@/utils/getUserData";
+import axios from "axios";
+import { cookies, headers } from "next/headers";
+import { redirect } from "next/navigation";
+
 export default async function EducacitionalPage() {
-  return (
-    <>
-      <div className="flex w-full gap-16">
-        <div className="w-full flex flex-col gap-8 h-full">
-          <div className="w-full bg-zinc-950 bg-opacity-50 h-fit flex p-2 flex-col justify-between">
-            <div className="font-extrabold">Informações de atividades:</div>
-            <div className="w-full bg-opacity-50 h-48 p-2 flex gap-4 justify-between">
-              <div className="flex flex-col">
-                <div className="flex w-full bg-green-700 p-2 rounded-t border-black border-b-2 border-opacity-10 justify-center font-extrabold">
-                  Aulas
-                </div>
-                <div className="flex bg-green-700 rounded-b">
-                  <div className="flex flex-col w-56 p-2 items-center">
-                    <div className="w-full flex justify-center bg-blue-400 rounded-t font-bold p-2">
-                      CFA
-                    </div>
-                    <div className="flex justify-center w-full text-center bg-zinc-900 rounded-b p-2">
-                      Um total de x aulas aplicadas.
-                    </div>
-                  </div>
-                  <div className="flex flex-col w-56 p-2 items-center">
-                    <div className="w-full flex justify-center bg-blue-400 rounded-t font-bold p-2">
-                      APC
-                    </div>
-                    <div className="flex justify-center w-full text-center bg-zinc-900 rounded-b p-2">
-                      Um total de x aulas aplicadas.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <div className="flex w-full bg-green-600 p-2 rounded-t border-black border-b-2 border-opacity-10 justify-center font-extrabold">
-                  Informações Gerais
-                </div>
-                <div className="flex bg-green-600 rounded-b">
-                  <div className="flex flex-col w-56 p-2 items-center">
-                    <div className="w-full flex justify-center bg-blue-400 rounded-t font-bold p-2">
-                      Guias
-                    </div>
-                    <div className="flex justify-center text-center w-full bg-zinc-900 rounded-b p-2">
-                      Um total de x guias admitidos.
-                    </div>
-                  </div>
-                  <div className="flex flex-col w-56 p-2 items-center">
-                    <div className="w-full flex justify-center bg-blue-400 rounded-t font-bold p-2">
-                      TG
-                    </div>
-                    <div className="flex justify-center w-full text-center bg-zinc-900 rounded-b p-2">
-                      Um total de x cursos aplicados.
-                    </div>
-                  </div>
-                  <div className="flex flex-col w-56 p-2 items-center">
-                    <div className="w-full flex justify-center bg-blue-400 rounded-t font-bold p-2">
-                      CID
-                    </div>
-                    <div className="flex justify-center w-full text-center bg-zinc-900 rounded-b p-2">
-                      Um total de x cursos aplicados.
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <div className="flex w-full bg-blue-700 p-2 rounded-t border-black border-b-2 border-opacity-10 justify-center font-extrabold">
-                  sei la oq
-                </div>
-                <div className="flex bg-blue-700 rounded-b">
-                  <div className="flex flex-col w-56 p-2 items-center">
-                    <div className="w-full flex justify-center bg-blue-400 rounded-t font-bold p-2">
-                      CFO
-                    </div>
-                    <div className="flex justify-center w-full text-center bg-zinc-900 rounded-b p-2">
-                      Um total de x cursos aplicados.
-                    </div>
-                  </div>
-                  <div className="flex flex-col w-56 p-2 items-center">
-                    <div className="w-full flex justify-center bg-blue-400 rounded-t font-bold p-2">
-                      CFE
-                    </div>
-                    <div className="flex justify-center w-full text-center bg-zinc-900 rounded-b p-2">
-                      Um total de x cursos aplicados.
-                    </div>
-                  </div>
-                </div>
-              </div>
+  var success = false;
+  var error = false;
+  const currentUser = await getUserData();
+  const userList = await getUsers();
+  const roles = await getRoles();
+  if (!userList || !roles) {
+    return;
+  }
+  if (currentUser) {
+    const verifyMemberOfGuias = await verifyMember();
+    if (verifyMemberOfGuias) {
+      const containsUser = verifyMemberOfGuias[0].profiles.some(
+        (profile: Profile) => {
+          return profile.user.nick === currentUser.nick;
+        }
+      );
+      if (containsUser) {
+        success = true;
+      } else {
+        redirect("/dashboard/departamentos/educacional");
+      }
+    }
+  }
+  if (!success) {
+    return <div>Carregando.</div>;
+  } else {
+    return (
+      <>
+        <div className="flex w-full gap-16">
+          <div className="w-full flex flex-col gap-8 h-full">
+            <Cards />
+            <div className="w-full bg-zinc-950 bg-opacity-50 h-full p-2">
+              Histórico de atividade
             </div>
-            {""}
           </div>
-          <div className="w-full bg-zinc-950 bg-opacity-50 h-full p-2">
-            Histórico de atividade
-          </div>
-        </div>
-        <div className="flex flex-col w-52 gap-8 h-full">
-          <div className="flex flex-col w-full bg-blue-500 h-28 rounded p-2">
-            botões de ação
-          </div>
-          <div className="flex flex-col w-full bg-blue-500 h-48 p-2">
-            quadro de avisos
-          </div>
-          <div className="flex flex-col w-full bg-blue-500 h-48 p-2">
-            membros
+          <div className="flex flex-col w-52 gap-8 h-full">
+            <ActionButtons />
+            <div className="flex flex-col w-full bg-blue-500 h-48 p-2">
+              quadro de avisos
+            </div>
+            <Memberlist roles={roles} userList={userList} />
           </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  }
+}
+async function verifyMember(): Promise<{ profiles: Profile[] }[] | null> {
+  try {
+    const cookieStore = cookies();
+    const token = cookieStore.get(COOKIE_NAME);
+
+    const headersList = headers();
+    const domain = headersList.get("host");
+
+    if (!token) {
+      return null;
+    }
+    const data = await axios.post(
+      `http://${domain}/api/company/member/getmember`,
+      {
+        name: "DpE",
+      },
+      {
+        headers: {
+          Cookie: `${COOKIE_NAME}=${token.value}`,
+        },
+      }
+    );
+    return data.data;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+}
+
+interface Profile {
+  user: { nick: string };
+  role: { role: string; roleLevel: number };
+}
+
+async function getUsers(): Promise<{ nick: string }[] | null> {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        nick: true,
+      },
+    });
+    return users;
+  } catch (e) {
+    return null;
+  } finally {
+    prisma.$disconnect();
+  }
+}
+
+async function getRoles(): Promise<
+  | {
+      id: number;
+      role: string;
+      companyId: number;
+      createdAt: Date;
+    }[]
+  | null
+> {
+  try {
+    const res = await prisma.companyRole.findMany({
+      where: {
+        company: {
+          name: "DpE",
+        },
+      },
+    });
+    return res;
+  } catch (e) {
+    return null;
+  } finally {
+    prisma.$disconnect();
+  }
 }

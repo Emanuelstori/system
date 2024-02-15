@@ -55,7 +55,6 @@ model Role {
 
 model CompanyRole {
   id        Int       @id @default(autoincrement())
-  idRel     Int?      @unique
   role      String    @default("Membro")
   company   Company   @relation(fields: [companyId], references: [id])
   profiles  Profile[]
@@ -66,7 +65,7 @@ model CompanyRole {
 
 model Company {
   id          Int           @id @default(autoincrement())
-  name        String
+  name        String        @unique
   description String
   roles       CompanyRole[]
   createdAt   DateTime      @default(now()) @db.Timestamp(6)

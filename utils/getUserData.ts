@@ -41,8 +41,10 @@ export async function getUserData(): Promise<UserType> {
             },
           },
         });
+        return userData;
       } catch (err) {
         console.log(err);
+
         return null;
       } finally {
         prisma.$disconnect();
