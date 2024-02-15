@@ -10,13 +10,14 @@ const { ptBR } = require("date-fns/locale");
 import { minLevelEditUser } from "@/constants";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { getUserData } from "@/utils/getUserData";
 
 export default async function Page({
   params,
 }: {
   params: { nickname: string };
 }) {
-  const userData = await getUserData({
+  const userData = await getUserProfileData({
     nickname: decodeURIComponent(params.nickname),
   });
   if (!userData) {
@@ -32,9 +33,12 @@ export default async function Page({
   const { figureString, online } = await res.json();
   let renderSetPoint: boolean = false;
 
+  const currentUserData = await getUserData();
+
   if (
-    userData.Profile?.role &&
-    userData.Profile.role.roleLevel >= minLevelEditUser
+    currentUserData &&
+    currentUserData.Profile &&
+    currentUserData.Profile.role.roleLevel >= minLevelEditUser
   ) {
     renderSetPoint = true;
   }
@@ -106,7 +110,7 @@ export default async function Page({
   );
 }
 
-async function getUserData({ nickname }: { nickname: string }) {
+async function getUserProfileData({ nickname }: { nickname: string }) {
   try {
     const userData = await prisma.user.findFirst({
       where: {
