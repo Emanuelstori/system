@@ -14,7 +14,11 @@ export default async function EducacitionalPage() {
   const currentUser = await getUserData();
   const userList = await getUsers();
   const roles = await getRoles();
-  if (!userList || !roles) {
+  if (!userList || !roles || !currentUser) {
+    redirect("/dashboard/departamentos/educacional");
+  }
+  if (currentUser?.Profile?.role.roleLevel) {
+    success = true;
     return;
   }
   if (currentUser) {
