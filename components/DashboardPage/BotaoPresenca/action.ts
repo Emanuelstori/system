@@ -11,7 +11,6 @@ import { ToastContainer, toast } from "react-toastify";
 export async function insertPoint(formData: FormData) {
     "use server";
     try {
-
         const cookieStore = cookies();
         const token = cookieStore.get(COOKIE_NAME);
 

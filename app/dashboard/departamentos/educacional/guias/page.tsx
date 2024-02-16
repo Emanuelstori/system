@@ -3,7 +3,6 @@ import Cards from "@/components/DashboardPage/DepartamentosPage/Educacional/Guia
 import Memberlist from "@/components/DashboardPage/DepartamentosPage/Educacional/Guias/Memberlist";
 import { COOKIE_NAME } from "@/constants";
 import prisma from "@/prisma/client";
-import { getUserData } from "@/utils/getUserData";
 import axios from "axios";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -23,20 +22,20 @@ export default async function EducacitionalPage() {
     currentUser.Profile.role.roleLevel >= 1000
   ) {
     success = true;
-    return;
-  }
-  if (currentUser) {
-    const verifyMemberOfGuias = await verifyMember();
-    if (verifyMemberOfGuias) {
-      const containsUser = verifyMemberOfGuias[0].profiles.some(
-        (profile: Profile) => {
-          return profile.user.nick === currentUser.nick;
+  } else {
+    if (currentUser) {
+      const verifyMemberOfGuias = await verifyMember();
+      if (verifyMemberOfGuias) {
+        const containsUser = verifyMemberOfGuias[0].profiles.some(
+          (profile: Profile) => {
+            return profile.user.nick === currentUser.nick;
+          }
+        );
+        if (containsUser) {
+          success = true;
+        } else {
+          redirect("/dashboard/departamentos/educacional");
         }
-      );
-      if (containsUser) {
-        success = true;
-      } else {
-        redirect("/dashboard/departamentos/educacional");
       }
     }
   }
@@ -137,3 +136,70 @@ async function getRoles(): Promise<
     prisma.$disconnect();
   }
 }
+
+export async function getUserData(): Promise<UserType> {
+  const headersList = headers();
+  const domain = headersList.get("host");
+  const cookieStore = cookies();
+
+  const token = cookieStore.get(COOKIE_NAME);
+  if (!token) {
+    return null;
+  }
+  try {
+    const res = await fetch(`http://${domain}/api/auth/me`, {
+      headers: {
+        Cookie: `${COOKIE_NAME}=${token.value}`,
+      },
+    });
+    const data = await res.json();
+    if (data) {
+      try {
+        const userData = await prisma.user.findFirst({
+          where: {
+            id: data.payload.data.id,
+          },
+          select: {
+            id: true,
+            nick: true,
+            active: true,
+            Profile: {
+              select: {
+                role: {
+                  select: {
+                    role: true,
+                    roleLevel: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+        return userData;
+      } catch (err) {
+        console.log(err);
+
+        return null;
+      } finally {
+        prisma.$disconnect();
+      }
+    }
+    return null;
+  } catch (e) {
+    console.log(e);
+
+    return null;
+  }
+}
+
+type UserType = {
+  id: string;
+  nick: string;
+  active: boolean;
+  Profile: {
+    role: {
+      role: string;
+      roleLevel: number;
+    };
+  } | null;
+} | null;
