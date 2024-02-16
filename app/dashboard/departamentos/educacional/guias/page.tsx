@@ -137,7 +137,7 @@ async function getRoles(): Promise<
   }
 }
 
-export async function getUserData(): Promise<UserType> {
+async function getUserData(): Promise<UserType> {
   const headersList = headers();
   const domain = headersList.get("host");
   const cookieStore = cookies();

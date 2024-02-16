@@ -1,31 +1,38 @@
 "use client";
 
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Select,
-  SelectItem,
-} from "@nextui-org/react";
-import { Key, useState } from "react";
+import React from "react";
+import { Select, SelectItem, Selection } from "@nextui-org/react";
 
 type User = {
   nick: string;
 };
 
-export default function UsersBox({ users }: { users: User[] | null }) {
-  const [value, setValue] = useState<Key>("");
+export default function UsersBox({
+  userList,
+  values,
+  setValues,
+}: {
+  userList: User[] | null;
+  values: Selection;
+  setValues: React.Dispatch<React.SetStateAction<Selection>>;
+}) {
+  const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setValues(new Set(e.target.value.split(",")));
+  };
 
-  if (users) {
+  if (userList) {
     return (
       <div className="w-96">
         <Select
           label="Selecionar usuários"
           placeholder="Selecione os usuários.."
           selectionMode="multiple"
+          selectedKeys={values}
+          onChange={handleSelectionChange}
         >
-          {users.map((user, index) => (
-            <SelectItem key={user.nick} value={user.nick}>
-              {user.nick}
+          {userList.map((userList, index) => (
+            <SelectItem id="users" key={userList.nick} value={userList.nick}>
+              {userList.nick}
             </SelectItem>
           ))}
         </Select>
