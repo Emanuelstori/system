@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-export default function AvisosModal({
+export default function EstatutoModal({
   isOpen,
   onOpen,
   onOpenChange,
@@ -51,7 +51,7 @@ export default function AvisosModal({
     });
 
     try {
-      await axios.post("/api/globalData/avisos", payload);
+      await axios.post("/api/globalData/estatuto", payload);
       toast.update(id, {
         render: "Criado com sucesso!",
         type: "success",
@@ -80,11 +80,11 @@ export default function AvisosModal({
         {(onClose) => (
           <form onSubmit={handleSubmit}>
             <ModalHeader className="flex flex-col gap-1">
-              Editar Aviso
+              Editar Estatuto
             </ModalHeader>
             <ModalBody>
               <div className="w-full flex items-center justify-center">
-                <div className="h-fit bg-white w-[calc(100%-32rem)]">
+                <div className="h-fit bg-white w-[calc(100%-32rem)] max-h-[calc(100vh-20rem)] overflow-y-auto">
                   <TextEditor value={value} setValue={setValue} />
                 </div>
               </div>

@@ -55,7 +55,7 @@ export default function NavBar({
         />
       </NavbarContent>
 
-      <NavbarContent className="sm:hidden pr-3" justify="center">
+      <NavbarContent className="sm:hidden pr-3">
         <NavbarBrand>
           <AcmeLogo />
           <p className="font-bold text-inherit">
@@ -64,7 +64,7 @@ export default function NavBar({
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+      <NavbarContent className="hidden sm:flex gap-4">
         <NavbarBrand>
           <AcmeLogo />
           <p className="font-bold text-inherit">
@@ -81,7 +81,7 @@ export default function NavBar({
                       <Button
                         disableRipple
                         size="lg"
-                        className="p-0 w-40 bg-transparent data-[hover=true]:bg-transparent"
+                        className="p-0 w-40  bg-transparent data-[hover=true]:bg-transparent"
                         endContent={icons.chevron}
                         radius="sm"
                         variant="light"
@@ -140,7 +140,7 @@ export default function NavBar({
                       <Button
                         disableRipple
                         size="lg"
-                        className="p-0 bg-transparent data-[hover=true]:bg-transparent"
+                        className="p-0 !justify-start bg-transparent data-[hover=true]:bg-transparent"
                         endContent={icons.chevron}
                         radius="sm"
                         variant="light"
@@ -170,7 +170,7 @@ export default function NavBar({
             ) : (
               <Button
                 size="lg"
-                className="p-0 bg-transparent data-[hover=true]:bg-transparent"
+                className="p-0 !justify-start bg-transparent data-[hover=true]:bg-transparent"
                 radius="sm"
                 variant="light"
                 onPress={() => push(item.href)}

@@ -164,12 +164,13 @@ model Classes {
 }
 
 model Documents {
-  id          Int     @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   title       String
   description String
   content     String
-  author      Profile @relation("DocumentAuthor", fields: [authorId], references: [id])
+  author      Profile  @relation("DocumentAuthor", fields: [authorId], references: [id])
   authorId    String
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
 }
 
 model Advice {

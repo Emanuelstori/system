@@ -35,7 +35,7 @@ export default async function DashboardPage({
 
   return (
     <div className="w-full max-w-screen h-full">
-      <div className="rounded-lg w-full flex flex-col px-4 md:!px-16 max-sm:!pl-2 pl-20 py-1">
+      <div className="rounded-lg w-full flex flex-col px-4 md:!px-16 pl-20 py-1">
         <div className="flex flex-wrap-reverse gap-y-4 w-full justify-between py-1 md:py-8 items-flex-start">
           <div className="flex flex-grow-1 md:pr-52 items-center justify-between max-sm:!py-4 gap-y-4 flex-wrap">
             <div className="flex flex-col">

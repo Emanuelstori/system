@@ -1,5 +1,7 @@
 "use client";
 
+import "./quill.core.css"
+
 import { Button, useDisclosure } from "@nextui-org/react";
 import { FaClipboardList, FaPencil } from "react-icons/fa6";
 import AvisosModal from "./AvisosModal";
@@ -38,11 +40,11 @@ export default function Avisos({
           </h1>
           {currentUser!.roleLevel >= minLevelEditAdvice && (
             <Button isIconOnly color="primary" onPress={onOpen}>
-              <FaPencil size={15} />
+              <FaPencil />
             </Button>
           )}
         </div>
-        <div className="w-full relative bg-zinc-900 h-fit max-h-96 overflow-y-auto rounded-lg gap-2 p-4 ">
+        <div className="w-full relative bg-zinc-900 h-fit max-h-96 overflow-y-auto rounded-lg gap-2 p-4 container-avisos">
           {parse(advice!.content)}
         </div>
       </div>

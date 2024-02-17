@@ -6,3 +6,5 @@ export const minLevelCreatePost = 1000;
 export const minLevelCreateCompany = 1000;
 export const minLevelAddMemberCompany = 1000;
 export const minLevelEditAdvice = 1000;
+export const minLevelEditEstatuto = 1000;
+export const minLevelEditCodpenal = 1000;

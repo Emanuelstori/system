@@ -50,11 +50,11 @@ export const menuItems = [
     submenu: [
       {
         title: "Estatuto",
-        href: "/dashboard/departamentos/lotas",
+        href: "/dashboard/estatuto",
       },
       {
         title: "Código Penal",
-        href: "/dashboard/departamentos/educacional",
+        href: "/dashboard/codpenal",
       },
     ],
   },
