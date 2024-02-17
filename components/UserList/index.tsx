@@ -36,9 +36,11 @@ export default async function UserList({ showModal }: { showModal?: boolean }) {
         </div>
       )}
       <div className="w-full items-center justify-center flex flex-col flex-wrap gap-4 px-10">
-        <div className="max-sm:!flex md:fixed top-20 right-10">
-          <CreateUserbutton />
-        </div>
+        {userInfo.data.roleLevel >= minLevelCreateUser && (
+          <div className="max-sm:!flex md:fixed top-20 right-10">
+            <CreateUserbutton />
+          </div>
+        )}
         <div className="flex w-full flex-wrap gap-4 pt-10 items-center justify-center">
           <List patentes={patentes} />
         </div>

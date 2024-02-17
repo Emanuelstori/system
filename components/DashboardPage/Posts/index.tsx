@@ -27,6 +27,8 @@ import { format } from "date-fns";
 import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import PostsModal from "./PostsModal";
+import { useUserContext } from "@/providers/UserProvider";
+import { minLevelCreatePost } from "@/constants";
 const { ptBR } = require("date-fns/locale");
 
 export default function Posts({
@@ -36,26 +38,36 @@ export default function Posts({
   posts: Post[];
   maxPage: number;
 }) {
+  const currentUser = useUserContext();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   return (
     <>
-      <PostsModal
-        isOpen={isOpen}
-        onOpen={onOpen}
-        onOpenChange={onOpenChange}
-        onClose={onClose}
-      />
+      {currentUser!.roleLevel >= minLevelCreatePost && (
+        <PostsModal
+          isOpen={isOpen}
+          onOpen={onOpen}
+          onOpenChange={onOpenChange}
+          onClose={onClose}
+        />
+      )}
       {/* INICIO POSTS */}
-      <div className="flex flex-col gap-2 flex-grow items-start">
+      <div className="flex w-[calc(100%-32rem)] flex-col gap-2 items-start">
         <div className="flex justify-between w-full">
           <h1 className="flex gap-2 px-2 text-xl items-center">
             <IoNewspaper /> Posts
           </h1>
-          <Button isIconOnly color="primary" aria-label="Like" onPress={onOpen}>
-            <FaPlus />
-          </Button>
+          {currentUser!.roleLevel >= minLevelCreatePost && (
+            <Button
+              isIconOnly
+              color="primary"
+              aria-label="Like"
+              onPress={onOpen}
+            >
+              <FaPlus />
+            </Button>
+          )}
         </div>
-        <div className="w-full flex flex-wrap gap-8 justify-start">
+        <div className="w-full flex flex-wrap gap-8 justify-around">
           {posts.map((item, index) => (
             <div
               key={index}

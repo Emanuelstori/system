@@ -98,8 +98,10 @@ export default function AvisosModal({
               Editar Aviso
             </ModalHeader>
             <ModalBody>
-              <div className="h-fit bg-white w-[calc(100%-32rem)]">
-                <TextEditor value={value} setValue={setValue} />
+              <div className="w-full flex items-center justify-center">
+                <div className="h-fit bg-white w-[calc(100%-32rem)]">
+                  <TextEditor value={value} setValue={setValue} />
+                </div>
               </div>
             </ModalBody>
             <ModalFooter>
