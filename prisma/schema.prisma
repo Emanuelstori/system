@@ -33,6 +33,7 @@ model Profile {
   awardedId             Int?
   Alert                 Alert[]         @relation("AlertAuthor")
   Documents             Documents[]     @relation("DocumentAuthor")
+  Advices               Advice[]        @relation("AdviceAuthor")
 }
 
 model User {
@@ -169,4 +170,12 @@ model Documents {
   content     String
   author      Profile @relation("DocumentAuthor", fields: [authorId], references: [id])
   authorId    String
+}
+
+model Advice {
+  id        Int      @id @default(autoincrement())
+  content   String
+  author    Profile  @relation("AdviceAuthor", fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime @default(now()) @db.Timestamp(6)
 }

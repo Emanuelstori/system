@@ -28,14 +28,12 @@ export default function TextEditor({
     toolbar: toolbarOptions,
   };
   return (
-    <div className="overflow-y-auto max-h-[50rem]">
-      <ReactQuill
-        className="bg-white text-black h-96 z-0 rounded"
-        modules={modulos}
-        theme="snow"
-        value={value}
-        onChange={setValue}
-      />
-    </div>
+    <ReactQuill
+      className="text-black z-0 rounded"
+      modules={modulos}
+      theme="snow"
+      value={value}
+      onChange={setValue}
+    />
   );
 }

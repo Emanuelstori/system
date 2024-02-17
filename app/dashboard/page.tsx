@@ -31,6 +31,8 @@ export default async function DashboardPage({
 
   const maxPage = await getMaxPages();
 
+  const advice = await getAdviceSquare();
+
   return (
     <div className="w-full max-w-screen h-full">
       <div className="rounded-lg w-full flex flex-col px-4 md:!px-16 max-sm:!pl-2 pl-20 py-1">
@@ -53,8 +55,8 @@ export default async function DashboardPage({
         <div className="flex w-full justify-end mt-4">
           <BotaoPresenca />
         </div>
-        <div className="flex w-full mt-4 justify-center md:justify-between h-fit items-start gap-2 flex-wrap md:!flex-nowrap">
-          <Avisos />
+        <div className="flex w-full mt-4 justify-center md:justify-between h-fit items-start gap-16 flex-wrap-reverse md:!flex-nowrap">
+          <Avisos advice={advice} />
 
           <Ranking />
         </div>
@@ -182,6 +184,21 @@ async function getMaxPages(): Promise<number> {
     return pages;
   } catch (e) {
     return 0;
+  } finally {
+    prisma.$disconnect();
+  }
+}
+
+async function getAdviceSquare() {
+  try {
+    const res = await prisma.advice.findFirst({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return res;
+  } catch (e) {
+    return null;
   } finally {
     prisma.$disconnect();
   }

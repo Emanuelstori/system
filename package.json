@@ -28,6 +28,7 @@
     "draft-js": "^0.11.7",
     "framer-motion": "^10.17.6",
     "howler": "^2.2.4",
+    "html-react-parser": "^5.1.6",
     "jsonwebtoken": "^9.0.2",
     "mdb-react-ui-kit": "^7.0.0",
     "next": "^14.0.4",
