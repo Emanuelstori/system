@@ -13,7 +13,8 @@ export default async function EducacitionalPage() {
   const currentUser = await getUserData();
   const userList = await getUsers();
   const roles = await getRoles();
-  if (!userList || !roles || !currentUser) {
+  const verifyMemberOfGuias = await verifyMember();
+  if (!userList || !roles || !currentUser || !verifyMemberOfGuias) {
     redirect("/dashboard/departamentos/educacional");
   }
   if (
@@ -24,7 +25,6 @@ export default async function EducacitionalPage() {
     success = true;
   } else {
     if (currentUser) {
-      const verifyMemberOfGuias = await verifyMember();
       if (verifyMemberOfGuias) {
         const containsUser = verifyMemberOfGuias[0].profiles.some(
           (profile: Profile) => {
@@ -46,7 +46,7 @@ export default async function EducacitionalPage() {
       <>
         <div className="flex w-full gap-16">
           <div className="w-full flex flex-col gap-8 h-full">
-            <Cards />
+            <Cards members={verifyMemberOfGuias[0].profiles.length} />
             <div className="w-full bg-zinc-950 bg-opacity-50 h-full p-2">
               Histórico de atividade
             </div>
@@ -56,7 +56,11 @@ export default async function EducacitionalPage() {
             <div className="flex flex-col w-full bg-blue-500 h-48 p-2">
               quadro de avisos
             </div>
-            <Memberlist roles={roles} userList={userList} />
+            <Memberlist
+              members={verifyMemberOfGuias}
+              roles={roles}
+              userList={userList}
+            />
           </div>
         </div>
       </>
@@ -78,6 +82,7 @@ async function verifyMember(): Promise<{ profiles: Profile[] }[] | null> {
       `http://${domain}/api/company/member/getmember`,
       {
         name: "DpE",
+        role: "Guia",
       },
       {
         headers: {

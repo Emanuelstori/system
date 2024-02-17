@@ -18,7 +18,6 @@ export async function GET() {
       }
     );
   }
-
   const { value } = token;
 
   // Always check this
@@ -26,7 +25,6 @@ export async function GET() {
 
   try {
     const payload = verify(value, secret);
-
     const response = {
       payload,
     };

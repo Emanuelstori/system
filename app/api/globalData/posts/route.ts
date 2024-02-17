@@ -31,6 +31,7 @@ export async function POST(request: Request) {
   const token = cookieStore.get(COOKIE_NAME);
 
   if (!token) {
+    console.log("caiu aqui");
     return NextResponse.json(
       {
         message: "Unauthorized",
@@ -59,26 +60,10 @@ export async function POST(request: Request) {
     );
   }
   try {
-    const permissionUser = await prisma.user.findFirst({
-      where: {
-        id: payload.data.id,
-      },
-      select: {
-        Profile: {
-          select: {
-            role: {
-              select: {
-                roleLevel: true,
-              },
-            },
-          },
-        },
-      },
-    });
     if (
-      !permissionUser?.Profile?.role.roleLevel ||
-      !(permissionUser?.Profile?.role.roleLevel <= minLevelCreatePost)
-    ) {
+      !payload.data.roleLevel ||
+      !(payload.data.roleLevel <= minLevelCreatePost)
+    ) {      
       return NextResponse.json(
         {
           message: "Usuário sem permissão.",

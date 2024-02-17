@@ -14,6 +14,8 @@ import { FaPlus } from "react-icons/fa6";
 import UsersBox from "./UsersBox";
 import RoleBox from "./RoleBox";
 import { Selection } from "@nextui-org/react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 export default function ModalAddMember({
   userList,
   roles,
@@ -27,10 +29,19 @@ export default function ModalAddMember({
   }[];
 }) {
   const [values, setValues] = React.useState<Selection>(new Set([]));
+  const [value, setValue] = React.useState<Selection>(new Set([]));
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const route = useRouter();
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(Array.from(values));
+    console.log(Array.from(value)[0]);
+    const data = await axios.post("/api/company/member/addmultiplemembers", {
+      name: "DpE",
+      usernick: Array.from(values),
+      role: Array.from(value)[0],
+    });
+    route.refresh();
   };
   return (
     <>
@@ -54,7 +65,7 @@ export default function ModalAddMember({
                     setValues={setValues}
                     userList={userList}
                   />
-                  <RoleBox roles={roles} />
+                  <RoleBox value={value} setValue={setValue} roles={roles} />
                 </ModalBody>
                 <ModalFooter>
                   <Button color="danger" variant="light" onPress={onClose}>

@@ -6,8 +6,8 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { name }: { name: string } = body;
-  if (!name) {
+  const { name, role }: { name: string; role: string } = body;
+  if (!name || !role) {
     return NextResponse.json(
       {
         message: "Something went wrong",
@@ -69,6 +69,7 @@ export async function POST(request: Request) {
         },
       },
       where: {
+        role: role,
         company: {
           name: name,
         },

@@ -6,8 +6,12 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { name, company }: { name: string; company: string } = body;
-  if (!name) {
+  const {
+    name,
+    company,
+    roleLevel,
+  }: { name: string; company: string; roleLevel: number } = body;
+  if (!name || !company || !roleLevel) {
     return NextResponse.json(
       {
         message: "Something went wrong",
@@ -71,6 +75,7 @@ export async function POST(request: Request) {
     const res = await prisma.companyRole.create({
       data: {
         role: name,
+        roleLevel: roleLevel,
         company: {
           connect: {
             name: company,

@@ -1,6 +1,6 @@
 "use client";
 
-export default function Cards() {
+export default function Cards({ members }: { members: number }) {
   return (
     <div className="w-full bg-zinc-950 bg-opacity-50 h-fit flex p-2 flex-col justify-between">
       <div className="font-extrabold">Informações de atividades:</div>
@@ -38,7 +38,7 @@ export default function Cards() {
                 Guias
               </div>
               <div className="flex justify-center text-center w-full bg-zinc-900 rounded-b p-2">
-                Um total de x guias admitidos.
+                Um total de {members.toString()} guias admitidos.
               </div>
             </div>
             <div className="flex flex-col w-56 p-2 items-center">

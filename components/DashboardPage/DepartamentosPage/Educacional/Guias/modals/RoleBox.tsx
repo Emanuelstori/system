@@ -2,9 +2,12 @@
 
 import { Select, SelectItem } from "@nextui-org/react";
 import { Key, useState } from "react";
+import { Selection } from "@nextui-org/react";
 
 export default function RoleBox({
   roles,
+  value,
+  setValue,
 }: {
   roles: {
     id: number;
@@ -12,6 +15,8 @@ export default function RoleBox({
     companyId: number;
     createdAt: Date;
   }[];
+  value: Selection;
+  setValue: React.Dispatch<React.SetStateAction<Selection>>;
 }) {
   if (roles) {
     return (
@@ -19,7 +24,8 @@ export default function RoleBox({
         <Select
           label="Cargo"
           placeholder="Selecione o cargo.."
-          className="max-w-lg"
+          selectedKeys={value}
+          onSelectionChange={setValue}
         >
           {roles?.map((item, index) => (
             <SelectItem key={item.role}>{item.role}</SelectItem>

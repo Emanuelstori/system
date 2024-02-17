@@ -56,6 +56,7 @@ model Role {
 model CompanyRole {
   id        Int       @id @default(autoincrement())
   role      String    @default("Membro")
+  roleLevel Int       @default(1)
   company   Company   @relation(fields: [companyId], references: [id])
   profiles  Profile[]
   companyId Int
