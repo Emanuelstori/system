@@ -34,8 +34,6 @@ export default function ModalAddMember({
   const route = useRouter();
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(Array.from(values));
-    console.log(Array.from(value)[0]);
     const data = await axios.post("/api/company/member/addmultiplemembers", {
       name: "DpE",
       usernick: Array.from(values),

@@ -1,4 +1,4 @@
-import { COOKIE_NAME, minLevelEditCodpenal } from "@/constants";
+import { COOKIE_NAME, minLevelCreateClass } from "@/constants";
 import prisma from "@/prisma/client";
 import HttpStatusCode from "@/utils/HttpStatusCode";
 import { verify } from "jsonwebtoken";
@@ -7,9 +7,15 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { content }: { content: string } = body;
+  const {
+    title,
+    content,
+    role,
+    description,
+  }: { title: string; content: string; role: string; description: string } =
+    body;
 
-  if (!content) {
+  if (!content || !title || !role || !description) {
     return NextResponse.json(
       {
         message: "Missing Fields",
@@ -25,6 +31,7 @@ export async function POST(request: Request) {
   const token = cookieStore.get(COOKIE_NAME);
 
   if (!token) {
+    console.log("caiu aqui");
     return NextResponse.json(
       {
         message: "Unauthorized",
@@ -55,7 +62,7 @@ export async function POST(request: Request) {
   try {
     if (
       !payload.data.roleLevel ||
-      !(payload.data.roleLevel <= minLevelEditCodpenal)
+      !(payload.data.roleLevel <= minLevelCreateClass)
     ) {
       return NextResponse.json(
         {
@@ -67,17 +74,43 @@ export async function POST(request: Request) {
       );
     }
 
-    const codpenal = await prisma.documents.create({
+    const roleId = await prisma.companyRole.findFirst({
+      select: {
+        id: true,
+      },
+      where: {
+        role: role,
+      },
+    });
+    if (!roleId) {
+      return NextResponse.json(
+        {
+          message: "Usuário sem permissão.",
+        },
+        {
+          status: HttpStatusCode.FORBIDDEN,
+        }
+      );
+    }
+
+    const newClass = await prisma.classes.create({
       data: {
-        title: "Código Penal",
+        title: title,
         content: content,
-        description: "Código Penal RHC",
+        description: description,
+        applicatorRole: {
+          connect: {
+            id: roleId.id,
+          },
+        },
         author: {
-          connect: { id: payload.data.id },
+          connect: {
+            id: payload.data.id,
+          },
         },
       },
     });
-    if (!codpenal) {
+    if (!newClass) {
       return NextResponse.json(
         {
           message: "Erro ao criar relatório.",

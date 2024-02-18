@@ -20,8 +20,9 @@ export default function RoleBox({
 }) {
   if (roles) {
     return (
-      <div className="w-96">
+      <div>
         <Select
+          isRequired
           label="Cargo"
           placeholder="Selecione o cargo.."
           selectedKeys={value}

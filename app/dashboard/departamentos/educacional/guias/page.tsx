@@ -52,7 +52,7 @@ export default async function EducacitionalPage() {
             </div>
           </div>
           <div className="flex flex-col w-52 gap-8 h-full">
-            <ActionButtons />
+            <ActionButtons roles={roles} />
             <div className="flex flex-col w-full bg-blue-500 h-48 p-2">
               quadro de avisos
             </div>
