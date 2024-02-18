@@ -11,6 +11,7 @@ import { minLevelEditUser } from "@/constants";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { getUserData } from "@/utils/getUserData";
+import { $Enums } from "@prisma/client";
 
 export default async function Page({
   params,
@@ -18,6 +19,9 @@ export default async function Page({
   params: { nickname: string };
 }) {
   const userData = await getUserProfileData({
+    nickname: decodeURIComponent(params.nickname),
+  });
+  const userCanRegister = await getUserCanRegister({
     nickname: decodeURIComponent(params.nickname),
   });
   if (!userData) {
@@ -69,7 +73,11 @@ export default async function Page({
                 </div>
               </div>
               <div>
-                <UserInfo userData={userData} online={online} />
+                <UserInfo
+                  userCanRegister={userCanRegister}
+                  userData={userData}
+                  online={online}
+                />
               </div>
               <div className="w-full flex p-2">
                 <div className="flex flex-col w-full">
@@ -113,6 +121,9 @@ export default async function Page({
 async function getUserProfileData({ nickname }: { nickname: string }) {
   try {
     const userData = await prisma.user.findFirst({
+      orderBy: {
+        createdAt: "desc",
+      },
       where: {
         nick: nickname,
       },
@@ -133,6 +144,20 @@ async function getUserProfileData({ nickname }: { nickname: string }) {
               },
             },
             targetedRelatories: {
+              where: {
+                AND: [
+                  {
+                    NOT: {
+                      relatoryType: "CLASS_APPLICATION",
+                    },
+                  },
+                  {
+                    NOT: {
+                      relatoryType: "GET_DAILY_PRESENCE",
+                    },
+                  },
+                ],
+              },
               select: {
                 title: true,
                 accepted: true,
@@ -158,6 +183,43 @@ async function getUserProfileData({ nickname }: { nickname: string }) {
     return null;
   } catch (err) {
     console.log(err);
+  } finally {
+    prisma.$disconnect();
+  }
+}
+
+async function getUserCanRegister({ nickname }: { nickname: string }): Promise<{
+  id: number;
+  title: string;
+  relatoryType: $Enums.RelatoryType;
+  accepted: boolean;
+  description: string | null;
+  createdAt: Date;
+  acceptedAt: Date | null;
+  profileId: string;
+} | null> {
+  try {
+    const data = await prisma.relatory.findFirst({
+      where: {
+        AND: [
+          {
+            targets: {
+              some: {
+                user: {
+                  nick: nickname,
+                },
+              },
+            },
+            relatoryType: "USER_ACCESS",
+          },
+        ],
+      },
+    });
+    if (data) return data;
+    return null;
+  } catch (err) {
+    console.log(err);
+    return null;
   } finally {
     prisma.$disconnect();
   }

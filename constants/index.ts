@@ -9,3 +9,4 @@ export const minLevelEditAdvice = 1000;
 export const minLevelEditEstatuto = 1000;
 export const minLevelEditCodpenal = 1000;
 export const minLevelCreateClass = 1000;
+export const minLevelActivateUser = 1000;

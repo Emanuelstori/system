@@ -88,6 +88,21 @@ const titles: TitlesType = {
     type: "info",
     typeSuccess: "info",
   },
+  ROLE_BUY: {
+    icon: <IoPersonAddSharp size={25} />,
+    type: "info",
+    typeSuccess: "success",
+  },
+  WARNING: {
+    icon: <IoPersonAddSharp size={25} />,
+    type: "info",
+    typeSuccess: "warning",
+  },
+  GET_DAILY_PRESENCE: {
+    icon: <IoPersonAddSharp size={25} />,
+    type: "info",
+    typeSuccess: "success",
+  },
 };
 
 export default function verticalTimeLine({
