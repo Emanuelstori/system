@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import {
   Modal,
   ModalContent,
@@ -10,22 +10,51 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
-
-export default function ModalScripts() {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+export default function ModalScripts({
+  classes,
+  setContent,
+  makeOpenClass,
+}: {
+  classes: {
+    id: number;
+    title: string;
+    description: string;
+    content: string;
+    aplicatorRoleId: number;
+    createdAt: Date;
+    authorId: string;
+  }[];
+  setContent: Dispatch<SetStateAction<string | undefined>>;
+  makeOpenClass: () => void;
+}) {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  
   return (
     <>
-      <Button onPress={onOpen} color="primary">
+      <Button onClick={onOpen} color="primary">
         Scripts de aula
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Scripts:</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Scripts:
+              </ModalHeader>
               <ModalBody>
-                <p>CFA</p>
-                <p>APC</p>
+                <div className="flex w-full justify-around">
+                  {classes.map((value, index) => (
+                    <button
+                      onClick={(e) => {
+                        setContent(value.content);
+                        makeOpenClass();
+                      }}
+                      key={index}
+                    >
+                      {value.title}
+                    </button>
+                  ))}
+                </div>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

@@ -1,0 +1,397 @@
+/*!
+ * Quill Editor v1.3.7
+ * https://quilljs.com/
+ * Copyright (c) 2014, Jason Chen
+ * Copyright (c) 2013, salesforce.com
+ */
+ .ql-container {
+    box-sizing: border-box;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    height: 100%;
+    margin: 0px;
+    position: relative;
+  }
+  .ql-container.ql-disabled .ql-tooltip {
+    visibility: hidden;
+  }
+  .ql-container.ql-disabled .container-aulas ul[data-checked] > li::before {
+    pointer-events: none;
+  }
+  .ql-clipboard {
+    left: -100000px;
+    height: 1px;
+    overflow-y: hidden;
+    position: absolute;
+    top: 50%;
+  }
+  .ql-clipboard p {
+    margin: 0;
+    padding: 0;
+  }
+  .container-aulas {
+    box-sizing: border-box;
+    line-height: 1.42;
+    height: 100%;
+    outline: none;
+    overflow-y: auto;
+    padding: 12px 15px;
+    tab-size: 4;
+    -moz-tab-size: 4;
+    text-align: left;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  .container-aulas > * {
+    cursor: text;
+  }
+  .container-aulas p,
+  .container-aulas ol,
+  .container-aulas ul,
+  .container-aulas pre,
+  .container-aulas blockquote,
+  .container-aulas h1,
+  .container-aulas h2,
+  .container-aulas h3,
+  .container-aulas h4,
+  .container-aulas h5,
+  .container-aulas h6 {
+    margin: 0;
+    padding: 0;
+    counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+  }
+  .container-aulas ol,
+  .container-aulas ul {
+    padding-left: 1.5em;
+  }
+  .container-aulas ol > li,
+  .container-aulas ul > li {
+    list-style-type: none;
+  }
+  .container-aulas ul > li::before {
+    content: '\2022';
+  }
+  .container-aulas ul[data-checked=true],
+  .container-aulas ul[data-checked=false] {
+    pointer-events: none;
+  }
+  .container-aulas ul[data-checked=true] > li *,
+  .container-aulas ul[data-checked=false] > li * {
+    pointer-events: all;
+  }
+  .container-aulas ul[data-checked=true] > li::before,
+  .container-aulas ul[data-checked=false] > li::before {
+    color: #777;
+    cursor: pointer;
+    pointer-events: all;
+  }
+  .container-aulas ul[data-checked=true] > li::before {
+    content: '\2611';
+  }
+  .container-aulas ul[data-checked=false] > li::before {
+    content: '\2610';
+  }
+  .container-aulas li::before {
+    display: inline-block;
+    white-space: nowrap;
+    width: 1.2em;
+  }
+  .container-aulas li:not(.ql-direction-rtl)::before {
+    margin-left: -1.5em;
+    margin-right: 0.3em;
+    text-align: right;
+  }
+  .container-aulas li.ql-direction-rtl::before {
+    margin-left: 0.3em;
+    margin-right: -1.5em;
+  }
+  .container-aulas ol li:not(.ql-direction-rtl),
+  .container-aulas ul li:not(.ql-direction-rtl) {
+    padding-left: 1.5em;
+  }
+  .container-aulas ol li.ql-direction-rtl,
+  .container-aulas ul li.ql-direction-rtl {
+    padding-right: 1.5em;
+  }
+  .container-aulas ol li {
+    counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+    counter-increment: list-0;
+  }
+  .container-aulas ol li:before {
+    content: counter(list-0, decimal) '. ';
+  }
+  .container-aulas ol li.ql-indent-1 {
+    counter-increment: list-1;
+  }
+  .container-aulas ol li.ql-indent-1:before {
+    content: counter(list-1, lower-alpha) '. ';
+  }
+  .container-aulas ol li.ql-indent-1 {
+    counter-reset: list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+  }
+  .container-aulas ol li.ql-indent-2 {
+    counter-increment: list-2;
+  }
+  .container-aulas ol li.ql-indent-2:before {
+    content: counter(list-2, lower-roman) '. ';
+  }
+  .container-aulas ol li.ql-indent-2 {
+    counter-reset: list-3 list-4 list-5 list-6 list-7 list-8 list-9;
+  }
+  .container-aulas ol li.ql-indent-3 {
+    counter-increment: list-3;
+  }
+  .container-aulas ol li.ql-indent-3:before {
+    content: counter(list-3, decimal) '. ';
+  }
+  .container-aulas ol li.ql-indent-3 {
+    counter-reset: list-4 list-5 list-6 list-7 list-8 list-9;
+  }
+  .container-aulas ol li.ql-indent-4 {
+    counter-increment: list-4;
+  }
+  .container-aulas ol li.ql-indent-4:before {
+    content: counter(list-4, lower-alpha) '. ';
+  }
+  .container-aulas ol li.ql-indent-4 {
+    counter-reset: list-5 list-6 list-7 list-8 list-9;
+  }
+  .container-aulas ol li.ql-indent-5 {
+    counter-increment: list-5;
+  }
+  .container-aulas ol li.ql-indent-5:before {
+    content: counter(list-5, lower-roman) '. ';
+  }
+  .container-aulas ol li.ql-indent-5 {
+    counter-reset: list-6 list-7 list-8 list-9;
+  }
+  .container-aulas ol li.ql-indent-6 {
+    counter-increment: list-6;
+  }
+  .container-aulas ol li.ql-indent-6:before {
+    content: counter(list-6, decimal) '. ';
+  }
+  .container-aulas ol li.ql-indent-6 {
+    counter-reset: list-7 list-8 list-9;
+  }
+  .container-aulas ol li.ql-indent-7 {
+    counter-increment: list-7;
+  }
+  .container-aulas ol li.ql-indent-7:before {
+    content: counter(list-7, lower-alpha) '. ';
+  }
+  .container-aulas ol li.ql-indent-7 {
+    counter-reset: list-8 list-9;
+  }
+  .container-aulas ol li.ql-indent-8 {
+    counter-increment: list-8;
+  }
+  .container-aulas ol li.ql-indent-8:before {
+    content: counter(list-8, lower-roman) '. ';
+  }
+  .container-aulas ol li.ql-indent-8 {
+    counter-reset: list-9;
+  }
+  .container-aulas ol li.ql-indent-9 {
+    counter-increment: list-9;
+  }
+  .container-aulas ol li.ql-indent-9:before {
+    content: counter(list-9, decimal) '. ';
+  }
+  .container-aulas .ql-indent-1:not(.ql-direction-rtl) {
+    padding-left: 3em;
+  }
+  .container-aulas li.ql-indent-1:not(.ql-direction-rtl) {
+    padding-left: 4.5em;
+  }
+  .container-aulas .ql-indent-1.ql-direction-rtl.ql-align-right {
+    padding-right: 3em;
+  }
+  .container-aulas li.ql-indent-1.ql-direction-rtl.ql-align-right {
+    padding-right: 4.5em;
+  }
+  .container-aulas .ql-indent-2:not(.ql-direction-rtl) {
+    padding-left: 6em;
+  }
+  .container-aulas li.ql-indent-2:not(.ql-direction-rtl) {
+    padding-left: 7.5em;
+  }
+  .container-aulas .ql-indent-2.ql-direction-rtl.ql-align-right {
+    padding-right: 6em;
+  }
+  .container-aulas li.ql-indent-2.ql-direction-rtl.ql-align-right {
+    padding-right: 7.5em;
+  }
+  .container-aulas .ql-indent-3:not(.ql-direction-rtl) {
+    padding-left: 9em;
+  }
+  .container-aulas li.ql-indent-3:not(.ql-direction-rtl) {
+    padding-left: 10.5em;
+  }
+  .container-aulas .ql-indent-3.ql-direction-rtl.ql-align-right {
+    padding-right: 9em;
+  }
+  .container-aulas li.ql-indent-3.ql-direction-rtl.ql-align-right {
+    padding-right: 10.5em;
+  }
+  .container-aulas .ql-indent-4:not(.ql-direction-rtl) {
+    padding-left: 12em;
+  }
+  .container-aulas li.ql-indent-4:not(.ql-direction-rtl) {
+    padding-left: 13.5em;
+  }
+  .container-aulas .ql-indent-4.ql-direction-rtl.ql-align-right {
+    padding-right: 12em;
+  }
+  .container-aulas li.ql-indent-4.ql-direction-rtl.ql-align-right {
+    padding-right: 13.5em;
+  }
+  .container-aulas .ql-indent-5:not(.ql-direction-rtl) {
+    padding-left: 15em;
+  }
+  .container-aulas li.ql-indent-5:not(.ql-direction-rtl) {
+    padding-left: 16.5em;
+  }
+  .container-aulas .ql-indent-5.ql-direction-rtl.ql-align-right {
+    padding-right: 15em;
+  }
+  .container-aulas li.ql-indent-5.ql-direction-rtl.ql-align-right {
+    padding-right: 16.5em;
+  }
+  .container-aulas .ql-indent-6:not(.ql-direction-rtl) {
+    padding-left: 18em;
+  }
+  .container-aulas li.ql-indent-6:not(.ql-direction-rtl) {
+    padding-left: 19.5em;
+  }
+  .container-aulas .ql-indent-6.ql-direction-rtl.ql-align-right {
+    padding-right: 18em;
+  }
+  .container-aulas li.ql-indent-6.ql-direction-rtl.ql-align-right {
+    padding-right: 19.5em;
+  }
+  .container-aulas .ql-indent-7:not(.ql-direction-rtl) {
+    padding-left: 21em;
+  }
+  .container-aulas li.ql-indent-7:not(.ql-direction-rtl) {
+    padding-left: 22.5em;
+  }
+  .container-aulas .ql-indent-7.ql-direction-rtl.ql-align-right {
+    padding-right: 21em;
+  }
+  .container-aulas li.ql-indent-7.ql-direction-rtl.ql-align-right {
+    padding-right: 22.5em;
+  }
+  .container-aulas .ql-indent-8:not(.ql-direction-rtl) {
+    padding-left: 24em;
+  }
+  .container-aulas li.ql-indent-8:not(.ql-direction-rtl) {
+    padding-left: 25.5em;
+  }
+  .container-aulas .ql-indent-8.ql-direction-rtl.ql-align-right {
+    padding-right: 24em;
+  }
+  .container-aulas li.ql-indent-8.ql-direction-rtl.ql-align-right {
+    padding-right: 25.5em;
+  }
+  .container-aulas .ql-indent-9:not(.ql-direction-rtl) {
+    padding-left: 27em;
+  }
+  .container-aulas li.ql-indent-9:not(.ql-direction-rtl) {
+    padding-left: 28.5em;
+  }
+  .container-aulas .ql-indent-9.ql-direction-rtl.ql-align-right {
+    padding-right: 27em;
+  }
+  .container-aulas li.ql-indent-9.ql-direction-rtl.ql-align-right {
+    padding-right: 28.5em;
+  }
+  .container-aulas .ql-video {
+    display: block;
+    max-width: 100%;
+  }
+  .container-aulas .ql-video.ql-align-center {
+    margin: 0 auto;
+  }
+  .container-aulas .ql-video.ql-align-right {
+    margin: 0 0 0 auto;
+  }
+  .container-aulas .ql-bg-black {
+    background-color: #000;
+  }
+  .container-aulas .ql-bg-red {
+    background-color: #e60000;
+  }
+  .container-aulas .ql-bg-orange {
+    background-color: #f90;
+  }
+  .container-aulas .ql-bg-yellow {
+    background-color: #ff0;
+  }
+  .container-aulas .ql-bg-green {
+    background-color: #008a00;
+  }
+  .container-aulas .ql-bg-blue {
+    background-color: #06c;
+  }
+  .container-aulas .ql-bg-purple {
+    background-color: #93f;
+  }
+  .container-aulas .ql-color-white {
+    color: #fff;
+  }
+  .container-aulas .ql-color-red {
+    color: #e60000;
+  }
+  .container-aulas .ql-color-orange {
+    color: #f90;
+  }
+  .container-aulas .ql-color-yellow {
+    color: #ff0;
+  }
+  .container-aulas .ql-color-green {
+    color: #008a00;
+  }
+  .container-aulas .ql-color-blue {
+    color: #06c;
+  }
+  .container-aulas .ql-color-purple {
+    color: #93f;
+  }
+  .container-aulas .ql-font-serif {
+    font-family: Georgia, Times New Roman, serif;
+  }
+  .container-aulas .ql-font-monospace {
+    font-family: Monaco, Courier New, monospace;
+  }
+  .container-aulas .ql-size-small {
+    font-size: 0.75em;
+  }
+  .container-aulas .ql-size-large {
+    font-size: 1.5em;
+  }
+  .container-aulas .ql-size-huge {
+    font-size: 2.5em;
+  }
+  .container-aulas .ql-direction-rtl {
+    direction: rtl;
+    text-align: inherit;
+  }
+  .container-aulas .ql-align-center {
+    text-align: center;
+  }
+  .container-aulas .ql-align-justify {
+    text-align: justify;
+  }
+  .container-aulas .ql-align-right {
+    text-align: right;
+  }
+  .container-aulas.ql-blank::before {
+    color: rgba(0,0,0,0.6);
+    content: attr(data-placeholder);
+    font-style: italic;
+    left: 15px;
+    pointer-events: none;
+    position: absolute;
+    right: 15px;
+  }

@@ -14,6 +14,8 @@ export default async function EducacitionalPage() {
   const userList = await getUsers();
   const roles = await getRoles();
   const verifyMemberOfGuias = await verifyMember();
+  const guiaClasses = await getClasses();
+
   if (!userList || !roles || !currentUser || !verifyMemberOfGuias) {
     redirect("/dashboard/departamentos/educacional");
   }
@@ -52,7 +54,7 @@ export default async function EducacitionalPage() {
             </div>
           </div>
           <div className="flex flex-col w-52 gap-8 h-full">
-            <ActionButtons roles={roles} />
+            <ActionButtons classes={guiaClasses} roles={roles} />
             <div className="flex flex-col w-full bg-blue-500 h-48 p-2">
               quadro de avisos
             </div>
@@ -194,6 +196,33 @@ async function getUserData(): Promise<UserType> {
     console.log(e);
 
     return null;
+  }
+}
+
+async function getClasses(): Promise<
+  {
+    id: number;
+    title: string;
+    description: string;
+    content: string;
+    aplicatorRoleId: number;
+    createdAt: Date;
+    authorId: string;
+  }[]
+> {
+  try {
+    const res = await prisma.classes.findMany({
+      where: {
+        applicatorRole: {
+          role: "Guia",
+        },
+      },
+    });
+    return res;
+  } catch (e) {
+    return [];
+  } finally {
+    prisma.$disconnect();
   }
 }
 
