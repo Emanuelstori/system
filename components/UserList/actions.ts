@@ -31,7 +31,6 @@ export async function createUser(formData: FormData) {
     if (!createdUser) {
       return false;
     }
-    console.log(createdUser);
     const relatoryFormData = {
       title: `${createdUser.data.nick} ainda não se cadastrou :(`,
       relatoryType: "USER_ACCESS",
