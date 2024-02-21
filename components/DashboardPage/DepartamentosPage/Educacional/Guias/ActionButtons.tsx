@@ -4,11 +4,13 @@ import ModalAulas from "./modals/ModalAulas";
 import ModalAddScripts from "./modals/ModalAddScripts";
 import ModalClasses from "./modals/ModalClasses";
 import { useDisclosure } from "@nextui-org/react";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
+import { Role } from "@prisma/client";
 
 export default function ActionButtons({
   roles,
   classes,
+  patentes,
 }: {
   roles: {
     id: number;
@@ -25,9 +27,12 @@ export default function ActionButtons({
     createdAt: Date;
     authorId: string;
   }[];
+  patentes: Role[];
 }) {
   const { onClose, isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [content, setContent] = useState<string | undefined>(undefined);
+  const [content, setContent] = useState<string | undefined | ReactNode>(
+    undefined
+  );
 
   return (
     <>
@@ -37,7 +42,13 @@ export default function ActionButtons({
           setContent={setContent}
           classes={classes}
         />
-        <ModalAulas classes={classes} />
+        <ModalAulas
+          makeOpenClass={onOpen}
+          setContent={setContent}
+          classes={classes}
+          roles={roles}
+          patentes={patentes}
+        />
         <ModalAddScripts roles={roles} />
         <ModalClasses
           onClose={onClose}

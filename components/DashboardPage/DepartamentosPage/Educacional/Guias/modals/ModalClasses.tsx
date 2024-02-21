@@ -2,7 +2,7 @@
 
 import "./aulas.css";
 
-import React from "react";
+import React, { ReactNode } from "react";
 import {
   Modal,
   ModalContent,
@@ -24,7 +24,7 @@ export default function ModalScripts({
   isOpen: boolean;
   onOpenChange: () => void;
   onClose: () => void;
-  content: string | undefined;
+  content: string | undefined | ReactNode;
 }) {
   return (
     <>
@@ -34,7 +34,8 @@ export default function ModalScripts({
             <>
               <ModalBody>
                 <div className="w-full bg-zinc-900 overflow-y-auto max-h-[calc(100vh-4.9999rem)] p-5 container-estatuto">
-                  {content && parse(content)}
+                  {content && typeof content === "string" && parse(content)}
+                  {content && typeof content != "string" && content}
                 </div>
               </ModalBody>
               <ModalFooter>

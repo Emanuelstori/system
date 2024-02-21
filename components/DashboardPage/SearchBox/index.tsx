@@ -6,6 +6,9 @@ import { Key, useState } from "react";
 
 type User = {
   nick: string;
+  Profile: {
+    points: number;
+  } | null;
 };
 
 export default function SearchBox({ users }: { users: User[] | null }) {

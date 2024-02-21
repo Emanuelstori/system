@@ -58,7 +58,7 @@ export default async function DashboardPage({
         <div className="flex w-full mt-4 justify-center md:justify-between h-fit items-start gap-16 flex-wrap-reverse md:!flex-nowrap">
           <Avisos advice={advice} />
 
-          <Ranking />
+          <Ranking users={userList} />
         </div>
         <div className="flex w-full mt-4 justify-center md:justify-between h-fit items-start gap-16 flex-wrap-reverse md:!flex-nowrap">
           <Posts posts={posts} maxPage={maxPage} />
@@ -91,13 +91,26 @@ async function getUserInfo(): Promise<any> {
 
 type User = {
   nick: string;
+  Profile: {
+    points: number;
+  } | null;
 };
 
 async function getUsers(): Promise<User[] | null> {
   try {
     const users = await prisma.user.findMany({
+      orderBy: {
+        Profile: {
+          points: "desc",
+        },
+      },
       select: {
         nick: true,
+        Profile: {
+          select: {
+            points: true,
+          },
+        },
       },
     });
     return users;
@@ -127,52 +140,7 @@ async function getPosts({ page }: { page: number }): Promise<Post[]> {
     });
     return posts;
   } catch (e) {
-    return [
-      {
-        id: 1,
-        image: "string",
-        title: "string",
-        description: "string",
-        content: "string",
-        likes: 0,
-        dislikes: 0,
-        authorId: "string",
-        createdAt: new Date(),
-      },
-      {
-        id: 1,
-        image: "string",
-        title: "string",
-        description: "string",
-        content: "string",
-        likes: 0,
-        dislikes: 0,
-        authorId: "string",
-        createdAt: new Date(),
-      },
-      {
-        id: 1,
-        image: "string",
-        title: "string",
-        description: "string",
-        content: "string",
-        likes: 0,
-        dislikes: 0,
-        authorId: "string",
-        createdAt: new Date(),
-      },
-      {
-        id: 1,
-        image: "string",
-        title: "string",
-        description: "string",
-        content: "string",
-        likes: 0,
-        dislikes: 0,
-        authorId: "string",
-        createdAt: new Date(),
-      },
-    ];
+    return [];
   } finally {
     prisma.$disconnect();
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, ReactNode, SetStateAction } from "react";
 import {
   Modal,
   ModalContent,
@@ -24,7 +24,7 @@ export default function ModalScripts({
     createdAt: Date;
     authorId: string;
   }[];
-  setContent: Dispatch<SetStateAction<string | undefined>>;
+  setContent: Dispatch<SetStateAction<string | undefined | ReactNode>>;
   makeOpenClass: () => void;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();

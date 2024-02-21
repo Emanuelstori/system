@@ -3,6 +3,7 @@ import Cards from "@/components/DashboardPage/DepartamentosPage/Educacional/Guia
 import Memberlist from "@/components/DashboardPage/DepartamentosPage/Educacional/Guias/Memberlist";
 import { COOKIE_NAME } from "@/constants";
 import prisma from "@/prisma/client";
+import { Role } from "@prisma/client";
 import axios from "axios";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -15,6 +16,7 @@ export default async function EducacitionalPage() {
   const roles = await getRoles();
   const verifyMemberOfGuias = await verifyMember();
   const guiaClasses = await getClasses();
+  const patentes = await getPatentes();
 
   if (!userList || !roles || !currentUser || !verifyMemberOfGuias) {
     redirect("/dashboard/departamentos/educacional");
@@ -54,7 +56,11 @@ export default async function EducacitionalPage() {
             </div>
           </div>
           <div className="flex flex-col w-52 gap-8 h-full">
-            <ActionButtons classes={guiaClasses} roles={roles} />
+            <ActionButtons
+              patentes={patentes}
+              classes={guiaClasses}
+              roles={roles}
+            />
             <div className="flex flex-col w-full bg-blue-500 h-48 p-2">
               quadro de avisos
             </div>
@@ -237,3 +243,23 @@ type UserType = {
     };
   } | null;
 } | null;
+
+async function getPatentes(): Promise<Role[]> {
+  try {
+    const res = await prisma.role.findMany({
+      orderBy: {
+        roleLevel: "asc",
+      },
+      where: {
+        NOT: {
+          role: "Supremo",
+        },
+      },
+    });
+    return res;
+  } catch (e) {
+    return [];
+  } finally {
+    prisma.$disconnect();
+  }
+}

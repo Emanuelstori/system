@@ -43,6 +43,7 @@ model User {
   password  String?  @db.VarChar(255)
   createdAt DateTime @default(now()) @db.Timestamp(6)
   active    Boolean  @default(false) @db.Boolean
+  exonerado Boolean  @default(false) @db.Boolean
   Profile   Profile?
 }
 

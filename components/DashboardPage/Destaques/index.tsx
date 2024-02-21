@@ -81,39 +81,6 @@ export default function Destaques() {
               </div>
             </div>
           </div>
-          <div
-            onMouseEnter={PlaySound}
-            className="flex w-full bg-blue-500 h-20 rounded-md hover:cursor-pointer hover:bg-green-500 transition-all duration-250"
-          >
-            <div className="w-full flex items-center h-20 rounded-md">
-              <div className="relative w-20 h-20 p-1">
-                <Image
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  fill={true}
-                  className="p-1"
-                  style={{ objectFit: "cover" }}
-                  src={`https://www.habbo.com/habbo-imaging/avatarimage?size=l&figure=hr-170-42.hd-209-1.ch-225-66.lg-285-64.sh-300-1408.cc-260-66&direction=3&head_direction=3&gesture=sml&action=std,crr=667`}
-                  alt={""}
-                />
-              </div>
-              <div>
-                <p>aquil02</p>
-                <p>Inspetor - {process.env.NEXT_PUBLIC_POLICE_NAME}</p>
-              </div>
-            </div>
-            <div className="w-fit flex h-full items-center px-2">
-              <div className="relative w-16 h-14 p-1">
-                <Image
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  fill={true}
-                  className="p-1"
-                  style={{ objectFit: "cover" }}
-                  src={`https://www.habbo.com.br/habbo-imaging/badge/b07104s36134s44164s4113405432cc15ea12dd11954c568b4a23255.gif`}
-                  alt={""}
-                />
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       {/* FIM DESTAQUES */}

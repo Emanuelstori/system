@@ -4,8 +4,22 @@ import { FaTrophy } from "react-icons/fa6";
 import Image from "next/image";
 import PlaySound from "@/components/PlaySound";
 import { Button } from "@nextui-org/react";
+import { useEffect, useState } from "react";
 
-export default function Ranking() {
+type User = {
+  nick: string;
+  Profile: {
+    points: number;
+  } | null;
+};
+
+export default function Ranking({ users }: { users: User[] | null }) {
+  if (!users) {
+    return <div>Loading...</div>;
+  }
+
+  const topFiveUsers = users.slice(0, 4);
+
   return (
     <>
       {/* INICIO RANKING */}
@@ -17,114 +31,9 @@ export default function Ranking() {
             </h1>
           </div>
           <div className="flex flex-col gap-3">
-            <div
-              onMouseEnter={PlaySound}
-              className="flex w-full bg-blue-500 h-10 rounded-md hover:cursor-pointer hover:bg-violet-700 transition-all duration-250 justify-between"
-            >
-              <div className="w-max flex items-center h-10 rounded-md">
-                <div className="relative w-14 h-12 p-1">
-                  <Image
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    fill={true}
-                    className="p-1"
-                    style={{
-                      objectFit: "cover",
-                      objectPosition: "50% 50%",
-                    }}
-                    src={`https://www.habbo.com.br/habbo-imaging/avatarimage?img_format=png&figure=hr-3852-1398.hd-3099-1.ch-3076-110-110.lg-3006-110-110.sh-3064-110.he-3189-93.ca-3085-1410.cc-3634-110-64&direction=3&head_direction=3&size=m&gesture=srp&headonly=1`}
-                    alt={""}
-                  />
-                </div>
-                <div>
-                  <p>B.L.P.S</p>
-                </div>
-              </div>
-              <div className="w-fit flex h-full items-center px-2">
-                <p className="flex">12 Pontos</p>
-                <div className="relative w-8 h-8 p-1">
-                  <Image
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    fill={true}
-                    className="p-1"
-                    style={{ objectFit: "cover" }}
-                    src={`https://www.habbo.com.br/habbo-imaging/badge/b07104s36134s44014s411340aa4fc4aaafc7a8ab371cf429a05a155.gif`}
-                    alt={""}
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              onMouseEnter={PlaySound}
-              className="flex w-full bg-blue-500 h-10 rounded-md hover:cursor-pointer hover:bg-violet-700 transition-all duration-250 justify-between"
-            >
-              <div className="w-max flex items-center h-10 rounded-md">
-                <div className="relative w-14 h-12 p-1">
-                  <Image
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    fill={true}
-                    className="p-1"
-                    style={{
-                      objectFit: "cover",
-                      objectPosition: "50% 50%",
-                    }}
-                    src={`https://www.habbo.com/habbo-imaging/avatar/hr-3829-42.hd-180-1.ch-210-1408.lg-285-64.sh-300-64.ea-3484.cc-260-1408%2Cs-0.g-1.d-2.h-2.a-0%2C3f6f76a730973ea9de59c1e98206b6ee.png 1x,/habbo-imaging/avatar/hr-3829-42.hd-180-1.ch-210-1408.lg-285-64.sh-300-64.ea-3484.cc-260-1408%2Cs-4.g-1.d-2.h-2.a-0%2Cf26f4bbd621f35941853c8fab252e3ea.png 2x`}
-                    alt={""}
-                  />
-                </div>
-                <div>
-                  <p>lucastecm</p>
-                </div>
-              </div>
-              <div className="w-fit flex h-full items-center px-2">
-                <p className="flex">9 Pontos</p>
-                <div className="relative w-8 h-8 p-1">
-                  <Image
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    fill={true}
-                    className="p-1"
-                    style={{ objectFit: "cover" }}
-                    src={`https://www.habbo.com.br/habbo-imaging/badge/b07104s36134s44014s411340aa4fc4aaafc7a8ab371cf429a05a155.gif`}
-                    alt={""}
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              onMouseEnter={PlaySound}
-              className="flex w-full bg-blue-500 h-10 rounded-md hover:cursor-pointer hover:bg-violet-700 transition-all duration-250 justify-between"
-            >
-              <div className="w-max flex items-center h-10 rounded-md">
-                <div className="relative w-14 h-12 p-1">
-                  <Image
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    fill={true}
-                    className="p-1"
-                    style={{
-                      objectFit: "cover",
-                      objectPosition: "50% 50%",
-                    }}
-                    src={`https://www.habbo.com/habbo-imaging/avatarimage?size=l&figure=hr-170-42.hd-209-1.ch-225-66.lg-285-64.sh-300-1408.cc-260-66&direction=3&head_direction=3&headonly=1`}
-                    alt={""}
-                  />
-                </div>
-                <div>
-                  <p>aquil02</p>
-                </div>
-              </div>
-              <div className="w-fit flex h-full items-center px-2">
-                <p className="flex">8 Pontos</p>
-                <div className="relative w-8 h-8 p-1">
-                  <Image
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    fill={true}
-                    className="p-1"
-                    style={{ objectFit: "cover" }}
-                    src={`https://www.habbo.com.br/habbo-imaging/badge/b07104s36134s44014s411340aa4fc4aaafc7a8ab371cf429a05a155.gif`}
-                    alt={""}
-                  />
-                </div>
-              </div>
-            </div>
+            {topFiveUsers.map((user, index) => (
+              <RankingItem key={index} user={user} />
+            ))}
             <Button onMouseEnter={PlaySound} className="bg-blue-800 mt-1">
               Ranking Completo
             </Button>
@@ -135,3 +44,65 @@ export default function Ranking() {
     </>
   );
 }
+
+interface RankingItemProps {
+  user: User;
+}
+
+const RankingItem: React.FC<RankingItemProps> = ({ user }) => {
+  const [figureData, setFigureData] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      const response = await fetch(
+        `https://www.habbo.com.br/api/public/users?name=${user.nick}`
+      );
+      const data = await response.json();
+      setFigureData(data.figureString); // assuming figureData is the correct property in the API response
+    };
+    fetchAvatar();
+  }, [user]);
+
+  if (!figureData) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div
+      onMouseEnter={PlaySound}
+      className="flex w-full bg-blue-500 h-10 rounded-md hover:cursor-pointer hover:bg-violet-700 transition-all duration-250 justify-between"
+    >
+      <div className="w-max flex items-center h-10 rounded-md">
+        <div className="relative w-14 h-12 p-1">
+          <Image
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            fill={true}
+            className="p-1"
+            style={{
+              objectFit: "cover",
+              objectPosition: "50% 50%",
+            }}
+            src={`https://www.habbo.com.br/habbo-imaging/avatarimage?img_format=png&figure=${figureData}&direction=3&head_direction=3&size=m&gesture=srp&headonly=1`}
+            alt={""}
+          />
+        </div>
+        <div>
+          <p>{user.nick}</p>
+        </div>
+      </div>
+      <div className="w-fit flex h-full items-center px-2">
+        <p className="flex">{user.Profile?.points} pontos</p>
+        <div className="relative w-8 h-8 p-1">
+          <Image
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            fill={true}
+            className="p-1"
+            style={{ objectFit: "cover" }}
+            src={`https://www.habbo.com.br/habbo-imaging/badge/b07104s36134s44014s411340aa4fc4aaafc7a8ab371cf429a05a155.gif`}
+            alt={""}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};

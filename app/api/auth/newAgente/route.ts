@@ -25,8 +25,6 @@ export async function POST(request: Request) {
     );
     const test = await exists.json();
     if (!exists || test.error) {
-      console.log(exists);
-      console.log(test);
       return NextResponse.json(
         {
           message: "Not Found",
@@ -52,7 +50,6 @@ export async function POST(request: Request) {
     const token = cookieStore.get(COOKIE_NAME);
 
     if (!token) {
-      console.log("Sem TOKEN");
       return NextResponse.json(
         {
           message: "Unauthorized",
@@ -70,7 +67,6 @@ export async function POST(request: Request) {
     try {
       payload = verify(value, secret);
     } catch (e) {
-      console.log("ERRO VERIFY");
       return NextResponse.json(
         {
           message: "Something went wrong",
@@ -165,6 +161,30 @@ export async function POST(request: Request) {
         },
         {
           status: 412,
+        }
+      );
+    }
+    const relatory = await prisma.relatory.create({
+      data: {
+        title: `${user.nick} ainda não se cadastrou :(`,
+        relatoryType: "USER_ACCESS",
+        author: {
+          connect: { id: payload.data.id },
+        },
+        accepted: true,
+        description: "Ainda não se cadastrou em nosso system.",
+        targets: {
+          connect: { id: user.id },
+        },
+      },
+    });
+    if (!relatory) {
+      return NextResponse.json(
+        {
+          message: "Erro ao criar relatório.",
+        },
+        {
+          status: HttpStatusCode.BAD_REQUEST,
         }
       );
     }
