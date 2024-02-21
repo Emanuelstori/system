@@ -46,7 +46,6 @@ export default function ActionButtons({
           makeOpenClass={onOpen}
           setContent={setContent}
           classes={classes}
-          roles={roles}
           patentes={patentes}
         />
         <ModalAddScripts roles={roles} />

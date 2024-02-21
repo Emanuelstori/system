@@ -8,8 +8,8 @@ import { v4 } from "uuid";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { username, TAG } = body;
-  if (!username || !TAG) {
+  const { username, TAG, approved, content } = body;
+  if (!username || !TAG || !approved || !content) {
     return NextResponse.json(
       {
         message: "Missing Fields",
@@ -179,6 +179,48 @@ export async function POST(request: Request) {
       },
     });
     if (!relatory) {
+      return NextResponse.json(
+        {
+          message: "Erro ao criar relatório.",
+        },
+        {
+          status: HttpStatusCode.BAD_REQUEST,
+        }
+      );
+    }
+    var relatoryClass;
+    if (approved) {
+      relatoryClass = await prisma.relatory.create({
+        data: {
+          title: `Aprovado CFA: Curso de Formação de Agentes`,
+          relatoryType: "CLASS_APPLICATION",
+          author: {
+            connect: { id: payload.data.id },
+          },
+          accepted: true,
+          description: content,
+          targets: {
+            connect: { id: user.id },
+          },
+        },
+      });
+    } else {
+      relatoryClass = await prisma.relatory.create({
+        data: {
+          title: `Reprovado CFA: Curso de Formação de Agentes`,
+          relatoryType: "CLASS_APPLICATION",
+          author: {
+            connect: { id: payload.data.id },
+          },
+          accepted: false,
+          description: content,
+          targets: {
+            connect: { id: user.id },
+          },
+        },
+      });
+    }
+    if (!relatoryClass) {
       return NextResponse.json(
         {
           message: "Erro ao criar relatório.",

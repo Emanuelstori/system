@@ -13,15 +13,16 @@ import {
   Selection,
   Select,
   SelectItem,
+  Checkbox,
+  Textarea,
 } from "@nextui-org/react";
-import RoleBox from "./RoleBox";
 import { Role } from "@prisma/client";
 import axios from "axios";
+import { useUserContext } from "@/providers/UserProvider";
 export default function ModalAulas({
   classes,
   setContent,
   makeOpenClass,
-  roles,
   patentes,
 }: {
   classes: {
@@ -35,28 +36,21 @@ export default function ModalAulas({
   }[];
   setContent: Dispatch<SetStateAction<string | undefined | ReactNode>>;
   makeOpenClass: () => void;
-  roles: {
-    id: number;
-    role: string;
-    companyId: number;
-    createdAt: Date;
-  }[];
   patentes: Role[];
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [valueRole, setValueRole] = React.useState<Selection>(new Set([]));
-
   return (
     <>
       <Button onClick={onOpen} className="text-white" color="success">
-        Scripts de aula
+        Aplicar aula
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Scripts:
+                Aplicar aula:
               </ModalHeader>
               <ModalBody>
                 <div className="flex w-full justify-around">
@@ -67,8 +61,6 @@ export default function ModalAulas({
                           AulaMount({
                             content: value,
                             patentes: patentes,
-                            valueRole: valueRole,
-                            SetValueRole: setValueRole,
                           })
                         );
                         makeOpenClass();
@@ -96,8 +88,6 @@ export default function ModalAulas({
 function AulaMount({
   content,
   patentes,
-  valueRole,
-  SetValueRole,
 }: {
   content: {
     id: number;
@@ -109,16 +99,24 @@ function AulaMount({
     authorId: string;
   };
   patentes: Role[];
-  valueRole: Selection;
-  SetValueRole: React.Dispatch<React.SetStateAction<Selection>>;
 }): ReactNode {
   const handleSubmit = async (formData: FormData) => {
+    var aprovado: boolean = false;
+    if (formData.get("approved") != null) {
+      aprovado = true;
+    }
     const rawFormData = {
       username: formData.get("username"),
       TAG: formData.get("tag"),
+      approved: aprovado,
+      content: formData.get("content"),
     };
+    if (!rawFormData) {
+      return;
+    }
     try {
       const createdUser = await axios.post(`/api/auth/newAgente`, rawFormData);
+
       if (!createdUser) {
         return false;
       }
@@ -128,12 +126,19 @@ function AulaMount({
     }
   };
   const handleSubmitAPC = async (formData: FormData) => {
+    var aprovado: boolean = false;
+    if (formData.get("approved") != null) {
+      aprovado = true;
+    }
     const rawFormData = {
       username: formData.get("username"),
       TAG: formData.get("tag"),
       patente: formData.get("patente"),
     };
     try {
+      if (!rawFormData) {
+        return;
+      }
       const createdUser = await axios.post(`/api/auth/newUser`, rawFormData);
       if (!createdUser) {
         return false;
@@ -145,6 +150,26 @@ function AulaMount({
         description: "Ainda não se cadastrou em nosso system.",
       };
       const relatory = await axios.post(`/api/relatories`, relatoryFormData);
+      if (aprovado) {
+        const relatoryFormData = {
+          title: `Aprovado APC: Curso de Formação de Agentes`,
+          relatoryType: "CLASS_APPLICATION",
+          targetProfileIds: [createdUser.data.id],
+          description: content,
+        };
+        const relatory = await axios.post(
+          `/api/activerelatory/relatories`,
+          relatoryFormData
+        );
+      } else {
+        const relatoryFormData = {
+          title: `Reprovado APC: Curso de Formação de Agentes`,
+          relatoryType: "CLASS_APPLICATION",
+          targetProfileIds: [createdUser.data.id],
+          description: content,
+        };
+        const relatory = await axios.post(`/api/relatories`, relatoryFormData);
+      }
     } catch (err) {
       console.log(err);
       console.log("Erro");
@@ -179,7 +204,6 @@ function AulaMount({
             id="patente"
             name="patente"
             label="Selecione a patente..."
-            variant="bordered"
             isRequired
             className="max-w-xs"
           >
@@ -189,6 +213,23 @@ function AulaMount({
               </SelectItem>
             ))}
           </Select>
+          <Textarea
+            isRequired
+            label="Observações"
+            placeholder="Observações.."
+            name="content"
+            id="content"
+            className="max-w-xs"
+          />
+          <Checkbox
+            defaultSelected
+            className="max-w-xs text-white"
+            name="approved"
+            color="success"
+            id="approved"
+          >
+            Aprovado
+          </Checkbox>
           <Button type="submit" className="text-white" color="success">
             Aplicar {content.title}
           </Button>
@@ -201,7 +242,7 @@ function AulaMount({
           <Input
             isRequired
             type="text"
-            label="username"
+            label="Username"
             id="username"
             name="username"
             placeholder="Insira o nick do usuário."
@@ -216,6 +257,23 @@ function AulaMount({
             placeholder="Insira sua TAG."
             className="max-w-xs"
           />
+          <Textarea
+            isRequired
+            label="Observações"
+            placeholder="Observações.."
+            name="content"
+            id="content"
+            className="max-w-xs"
+          />
+          <Checkbox
+            defaultSelected
+            className="max-w-xs text-white"
+            name="approved"
+            color="success"
+            id="approved"
+          >
+            Aprovado
+          </Checkbox>
           <Button type="submit" className="text-white" color="success">
             Aplicar {content.title}
           </Button>
