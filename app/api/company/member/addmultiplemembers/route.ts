@@ -107,6 +107,10 @@ export async function POST(request: Request) {
             },
           },
         },
+        company: {
+          name: name,
+        },
+        role: role,
       },
     });
     const nicksExistentes = userJustMember.flatMap((role) =>

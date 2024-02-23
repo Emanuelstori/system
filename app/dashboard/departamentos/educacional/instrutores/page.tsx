@@ -1,6 +1,6 @@
-import ActionButtons from "@/components/DashboardPage/DepartamentosPage/Educacional/Guias/ActionButtons";
-import Cards from "@/components/DashboardPage/DepartamentosPage/Educacional/Guias/Cards";
-import Memberlist from "@/components/DashboardPage/DepartamentosPage/Educacional/Guias/Memberlist";
+import ActionButtons from "@/components/DashboardPage/DepartamentosPage/Educacional/Instrutores/ActionButtons";
+import Cards from "@/components/DashboardPage/DepartamentosPage/Educacional/Instrutores/Cards";
+import Memberlist from "@/components/DashboardPage/DepartamentosPage/Educacional/Instrutores/Memberlist";
 import { COOKIE_NAME } from "@/constants";
 import prisma from "@/prisma/client";
 import { Role } from "@prisma/client";
@@ -13,12 +13,19 @@ export default async function EducacitionalPage() {
   var error = false;
   const currentUser = await getUserData();
   const userList = await getUsers();
+  const allUsers = await getAllUsers();
   const roles = await getRoles();
-  const verifyMemberOfGuias = await verifyMember();
-  const guiaClasses = await getClasses();
+  const verifyMemberOfInstrutores = await verifyMember();
+  const instrutorClasses = await getClasses();
   const patentes = await getPatentes();
 
-  if (!userList || !roles || !currentUser || !verifyMemberOfGuias) {
+  if (
+    !userList ||
+    !roles ||
+    !currentUser ||
+    !verifyMemberOfInstrutores ||
+    !allUsers
+  ) {
     redirect("/dashboard/departamentos/educacional");
   }
   if (
@@ -29,8 +36,12 @@ export default async function EducacitionalPage() {
     success = true;
   } else {
     if (currentUser) {
-      if (verifyMemberOfGuias) {
-        const containsUser = verifyMemberOfGuias[0].profiles.some(
+      if (
+        verifyMemberOfInstrutores &&
+        verifyMemberOfInstrutores[0] &&
+        verifyMemberOfInstrutores[0].profiles.length > 0
+      ) {
+        const containsUser = verifyMemberOfInstrutores[0].profiles.some(
           (profile: Profile) => {
             return profile.user.nick === currentUser.nick;
           }
@@ -52,8 +63,8 @@ export default async function EducacitionalPage() {
           <div className="w-full flex flex-col gap-8 h-full">
             <Cards
               members={
-                verifyMemberOfGuias[0]
-                  ? verifyMemberOfGuias[0].profiles.length
+                verifyMemberOfInstrutores[0]
+                  ? verifyMemberOfInstrutores[0].profiles.length
                   : 0
               }
             />
@@ -64,14 +75,15 @@ export default async function EducacitionalPage() {
           <div className="flex flex-col w-52 gap-8 h-full">
             <ActionButtons
               patentes={patentes}
-              classes={guiaClasses}
+              classes={instrutorClasses}
               roles={roles}
+              allUsers={allUsers}
             />
             <div className="flex flex-col w-full bg-blue-500 h-48 p-2">
               quadro de avisos
             </div>
             <Memberlist
-              members={verifyMemberOfGuias}
+              members={verifyMemberOfInstrutores}
               roles={roles}
               userList={userList}
             />
@@ -96,7 +108,7 @@ async function verifyMember(): Promise<{ profiles: Profile[] }[] | null> {
       `http://${domain}/api/company/member/getmember`,
       {
         name: "DpE",
-        role: "Guia",
+        role: "Instrutor",
       },
       {
         headers: {
@@ -226,7 +238,7 @@ async function getClasses(): Promise<
     const res = await prisma.classes.findMany({
       where: {
         applicatorRole: {
-          role: "Guia",
+          role: "Instrutor",
         },
       },
     });
@@ -270,16 +282,23 @@ async function getPatentes(): Promise<Role[]> {
   }
 }
 
-async function getAplicados() {
+async function getAllUsers(): Promise<
+  | {
+      id: string;
+      nick: string;
+    }[]
+  | null
+> {
   try {
-    const res = await prisma.relatory.findMany({
-      where: {
-        relatoryType: "CLASS_APPLICATION",
+    const users = await prisma.user.findMany({
+      select: {
+        nick: true,
+        id: true,
       },
     });
-    return res;
+    return users;
   } catch (e) {
-    return [];
+    return null;
   } finally {
     prisma.$disconnect();
   }

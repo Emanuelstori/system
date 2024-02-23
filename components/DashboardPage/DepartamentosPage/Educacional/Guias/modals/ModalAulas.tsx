@@ -109,13 +109,38 @@ function AulaMount({
       username: formData.get("username"),
       TAG: formData.get("tag"),
       approved: aprovado,
-      content: formData.get("content"),
+      description: formData.get("description"),
     };
     if (!rawFormData) {
       return;
     }
     try {
       const createdUser = await axios.post(`/api/auth/newAgente`, rawFormData);
+      if (aprovado) {
+        const relatoryClassFormData = {
+          title: `Aprovado CFA: Curso de Formação de Agentes`,
+          targetProfileIds: [createdUser.data.id],
+          description: formData.get("description"),
+          deptRole: "Guia",
+          accepted: true,
+        };
+        const relatoryClass = await axios.post(
+          `/api/relatories/classrelatory`,
+          relatoryClassFormData
+        );
+      } else {
+        const relatoryClassFormData = {
+          title: `Reprovado CFA: Curso de Formação de Agentes`,
+          targetProfileIds: [createdUser.data.id],
+          description: formData.get("description"),
+          deptRole: "Guia",
+          accepted: false,
+        };
+        const relatoryClass = await axios.post(
+          `/api/relatories/classrelatory`,
+          relatoryClassFormData
+        );
+      }
 
       if (!createdUser) {
         return false;
@@ -134,6 +159,7 @@ function AulaMount({
       username: formData.get("username"),
       TAG: formData.get("tag"),
       patente: formData.get("patente"),
+      description: formData.get("description"),
     };
     try {
       if (!rawFormData) {
@@ -152,23 +178,44 @@ function AulaMount({
       const relatory = await axios.post(`/api/relatories`, relatoryFormData);
       if (aprovado) {
         const relatoryFormData = {
-          title: `Aprovado APC: Curso de Formação de Agentes`,
+          title: `Aprovado APC: Aula Pós Contrato`,
           relatoryType: "CLASS_APPLICATION",
           targetProfileIds: [createdUser.data.id],
-          description: content,
+          description: formData.get("description"),
         };
         const relatory = await axios.post(
-          `/api/activerelatory/relatories`,
+          `/api/relatories/activerelatory`,
           relatoryFormData
+        );
+        const relatoryClassFormData = {
+          title: `Aprovado APC: Aula Pós Contrato`,
+          targetProfileIds: [createdUser.data.id],
+          description: formData.get("description"),
+          deptRole: "Guia",
+          accepted: true,
+        };
+        const relatoryClass = await axios.post(
+          `/api/relatories/classrelatory`,
+          relatoryClassFormData
         );
       } else {
         const relatoryFormData = {
-          title: `Reprovado APC: Curso de Formação de Agentes`,
+          title: `Reprovado APC: Aula Pós Contrato`,
           relatoryType: "CLASS_APPLICATION",
           targetProfileIds: [createdUser.data.id],
-          description: content,
+          description: formData.get("description"),
         };
         const relatory = await axios.post(`/api/relatories`, relatoryFormData);
+        const relatoryClassFormData = {
+          title: `Aprovado APC: Aula Pós Contrato`,
+          targetProfileIds: [createdUser.data.id],
+          description: formData.get("description"),
+          deptRole: "Guia",
+        };
+        const relatoryClass = await axios.post(
+          `/api/relatories/classrelatory`,
+          relatoryClassFormData
+        );
       }
     } catch (err) {
       console.log(err);
@@ -217,8 +264,8 @@ function AulaMount({
             isRequired
             label="Observações"
             placeholder="Observações.."
-            name="content"
-            id="content"
+            name="description"
+            id="description"
             className="max-w-xs"
           />
           <Checkbox
@@ -261,8 +308,8 @@ function AulaMount({
             isRequired
             label="Observações"
             placeholder="Observações.."
-            name="content"
-            id="content"
+            name="description"
+            id="description"
             className="max-w-xs"
           />
           <Checkbox

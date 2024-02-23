@@ -18,13 +18,15 @@ export default function Ranking({ users }: { users: User[] | null }) {
     return <div>Loading...</div>;
   }
 
-  const topFiveUsers = users.slice(0, 4);
+  const [quantity, setQuantity] = useState<number>(4);
+
+  const topFiveUsers = users.slice(0, quantity);
 
   return (
     <>
       {/* INICIO RANKING */}
       <div className="flex flex-col gap-2 w-96 h-fit">
-        <div className="bg-zinc-900 max-sm:w-full max-sm:!px-1 flex flex-col gap-6 bg-opacity-50 rounded-xl p-4 w-96 h-fit">
+        <div className="bg-zinc-900 max-sm:w-full max-sm:!px-1 flex max-h-96 overflow-y-auto flex-col gap-6 bg-opacity-50 rounded-xl p-4 w-96 h-fit">
           <div>
             <h1 className="flex gap-2 px-2 items-center text-xl">
               <FaTrophy /> Ranking Semanal
@@ -34,9 +36,29 @@ export default function Ranking({ users }: { users: User[] | null }) {
             {topFiveUsers.map((user, index) => (
               <RankingItem key={index} user={user} />
             ))}
-            <Button onMouseEnter={PlaySound} className="bg-blue-800 mt-1">
-              Ranking Completo
+            <Button
+              onMouseEnter={PlaySound}
+              onClick={() => {
+                console.log(users.length, quantity + 8);
+                users.length > quantity + 8
+                  ? setQuantity(quantity + 4)
+                  : setQuantity(users.length);
+              }}
+              className="bg-blue-800 mt-1"
+            >
+              Ver mais
             </Button>
+            {quantity > 4 && (
+              <Button
+                onMouseEnter={PlaySound}
+                onClick={() =>
+                  quantity >= 8 ? setQuantity(quantity - 4) : setQuantity(4)
+                }
+                className="bg-blue-800 mt-1"
+              >
+                Ver menos
+              </Button>
+            )}
           </div>
         </div>
       </div>

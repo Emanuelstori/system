@@ -8,8 +8,8 @@ import { v4 } from "uuid";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { username, TAG, approved, content } = body;
-  if (!username || !TAG || !approved || !content) {
+  const { username, TAG, approved, description } = body;
+  if (!username || !TAG || !approved || !description) {
     return NextResponse.json(
       {
         message: "Missing Fields",
@@ -198,7 +198,7 @@ export async function POST(request: Request) {
             connect: { id: payload.data.id },
           },
           accepted: true,
-          description: content,
+          description: description,
           targets: {
             connect: { id: user.id },
           },
@@ -213,7 +213,7 @@ export async function POST(request: Request) {
             connect: { id: payload.data.id },
           },
           accepted: false,
-          description: content,
+          description: description,
           targets: {
             connect: { id: user.id },
           },

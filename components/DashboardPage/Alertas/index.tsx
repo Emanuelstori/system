@@ -17,9 +17,9 @@ export default function Alertas() {
           alt={""}
         />
       </div>
-      <div className="flex flex-col p-2 !pr-8">
+      <div className="flex flex-col p-2 !pr-8 max-w-56 max-h-20">
         <p>ALERTA</p>
-        <p>Reunião geral domingo!</p>
+        <p className="text-sm">Reunião geral domingo! Reunião geral domingo!</p>
       </div>
     </div>
   );

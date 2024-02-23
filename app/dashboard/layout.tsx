@@ -41,7 +41,7 @@ export default function DashboardLayout({
       </main>
     );
   }
-
+  //onContextMenu={(e) => e.preventDefault()}
   return (
     <main className="max-w-screen">
       <UserProvider userInfo={userInfo}>

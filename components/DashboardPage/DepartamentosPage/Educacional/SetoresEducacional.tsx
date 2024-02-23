@@ -40,7 +40,7 @@ export default function SetoresEducacional() {
       <div
         onMouseEnter={PlaySound}
         onClick={() =>
-          router.push("/dashboard/departamentos/educacional/guias")
+          router.push("/dashboard/departamentos/educacional/instrutores")
         }
         className="flex flex-col hover:cursor-pointer transform transition-transform hover:scale-105 rounded hover:animate-glow"
       >
@@ -68,7 +68,7 @@ export default function SetoresEducacional() {
       <div
         onMouseEnter={PlaySound}
         onClick={() =>
-          router.push("/dashboard/departamentos/educacional/guias")
+          router.push("/dashboard/departamentos/educacional/treinadores")
         }
         className="flex flex-col hover:cursor-pointer transform transition-transform hover:scale-105 rounded hover:animate-glow"
       >

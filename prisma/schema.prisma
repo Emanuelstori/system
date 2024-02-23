@@ -12,28 +12,30 @@ datasource db {
 }
 
 model Profile {
-  id                    String          @id
-  tag                   String?         @db.VarChar(255)
-  salary                Int             @default(1)
-  warnings              Int             @default(0)
-  identity              String          @db.VarChar(255)
-  user                  User            @relation(fields: [id], references: [id], onDelete: Cascade)
-  roleId                Int
-  role                  Role            @relation(fields: [roleId], references: [id])
-  points                Int             @default(0)
-  company               CompanyRole[]   @relation()
-  authoredRelatories    Relatory[]      @relation("RelatoryAuthor")
-  targetedRelatories    Relatory[]      @relation("RelatoryTarget")
-  sentNotifications     Notifications[] @relation("NotificationAuthor")
-  receivedNotifications Notifications[] @relation("NotificationTarget")
-  posts                 Post[]          @relation("PostAuthor")
-  watchedPosts          Post[]          @relation("WatchedPosts")
-  classes               Classes[]       @relation("ClassAuthor")
-  Awarded               Awarded?        @relation(fields: [awardedId], references: [id], onDelete: Cascade)
-  awardedId             Int?
-  Alert                 Alert[]         @relation("AlertAuthor")
-  Documents             Documents[]     @relation("DocumentAuthor")
-  Advices               Advice[]        @relation("AdviceAuthor")
+  id                      String            @id
+  tag                     String?           @db.VarChar(255)
+  salary                  Int               @default(1)
+  warnings                Int               @default(0)
+  identity                String            @db.VarChar(255)
+  user                    User              @relation(fields: [id], references: [id], onDelete: Cascade)
+  roleId                  Int
+  role                    Role              @relation(fields: [roleId], references: [id])
+  points                  Int               @default(0)
+  company                 CompanyRole[]     @relation()
+  authoredRelatories      Relatory[]        @relation("RelatoryAuthor")
+  targetedRelatories      Relatory[]        @relation("RelatoryTarget")
+  sentNotifications       Notifications[]   @relation("NotificationAuthor")
+  receivedNotifications   Notifications[]   @relation("NotificationTarget")
+  posts                   Post[]            @relation("PostAuthor")
+  watchedPosts            Post[]            @relation("WatchedPosts")
+  classes                 Classes[]         @relation("ClassAuthor")
+  Awarded                 Awarded?          @relation(fields: [awardedId], references: [id], onDelete: Cascade)
+  awardedId               Int?
+  Alert                   Alert[]           @relation("AlertAuthor")
+  Documents               Documents[]       @relation("DocumentAuthor")
+  Advices                 Advice[]          @relation("AdviceAuthor")
+  authoredClassRelatories RelatoryClasses[] @relation("RelatoryClassAuthor")
+  targetedClassRelatories RelatoryClasses[] @relation("RelatoryClassTarget")
 }
 
 model User {
@@ -56,14 +58,15 @@ model Role {
 }
 
 model CompanyRole {
-  id        Int       @id @default(autoincrement())
-  role      String    @default("Membro")
-  roleLevel Int       @default(1)
-  company   Company   @relation(fields: [companyId], references: [id])
-  profiles  Profile[]
-  companyId Int
-  createdAt DateTime  @default(now()) @db.Timestamp(6)
-  Classes   Classes[] @relation("ClassAplicator")
+  id              Int               @id @default(autoincrement())
+  role            String            @default("Membro")
+  roleLevel       Int               @default(1)
+  company         Company           @relation(fields: [companyId], references: [id])
+  profiles        Profile[]
+  companyId       Int
+  createdAt       DateTime          @default(now()) @db.Timestamp(6)
+  Classes         Classes[]         @relation("ClassAplicator")
+  RelatoryClasses RelatoryClasses[]
 }
 
 model Company {
@@ -180,4 +183,17 @@ model Advice {
   author    Profile  @relation("AdviceAuthor", fields: [authorId], references: [id])
   authorId  String
   createdAt DateTime @default(now()) @db.Timestamp(6)
+}
+
+model RelatoryClasses {
+  id            Int         @id @default(autoincrement())
+  title         String
+  author        Profile     @relation(name: "RelatoryClassAuthor", fields: [profileId], references: [id])
+  targets       Profile[]   @relation(name: "RelatoryClassTarget")
+  accepted      Boolean     @default(false)
+  description   String?
+  createdAt     DateTime    @default(now()) @db.Timestamp(6)
+  profileId     String
+  company       CompanyRole @relation(fields: [companyRoleId], references: [id])
+  companyRoleId Int
 }

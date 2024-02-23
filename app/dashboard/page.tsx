@@ -52,15 +52,14 @@ export default async function DashboardPage({
           </div>
           <Alertas />
         </div>
-        <div className="flex w-full justify-end mt-4">
-          <BotaoPresenca />
-        </div>
-        <div className="flex w-full mt-4 justify-center md:justify-between h-fit items-start gap-16 flex-wrap-reverse md:!flex-nowrap">
+        <div className="flex w-full mt-2 justify-center md:justify-between h-fit items-start gap-16 flex-wrap-reverse md:!flex-nowrap">
           <Avisos advice={advice} />
-
-          <Ranking users={userList} />
+          <div className="flex flex-col gap-2">
+            <BotaoPresenca />
+            <Ranking users={userList} />
+          </div>
         </div>
-        <div className="flex w-full mt-4 justify-center md:justify-between h-fit items-start gap-16 flex-wrap-reverse md:!flex-nowrap">
+        <div className="flex w-full mt-2 justify-center md:justify-between h-fit items-start gap-16 flex-wrap-reverse md:!flex-nowrap">
           <Posts posts={posts} maxPage={maxPage} />
           <Destaques />
         </div>
