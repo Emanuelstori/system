@@ -1,5 +1,3 @@
-"use client";
-
 import { FaTrophy } from "react-icons/fa6";
 import Image from "next/image";
 import PlaySound from "@/components/PlaySound";
@@ -14,13 +12,18 @@ type User = {
 };
 
 export default function Ranking({ users }: { users: User[] | null }) {
+  const [quantity, setQuantity] = useState<number>(4);
+  const [topFiveUsers, setTopFiveUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    if (users) {
+      setTopFiveUsers(users.slice(0, quantity));
+    }
+  }, [users, quantity]);
+
   if (!users) {
     return <div>Loading...</div>;
   }
-
-  const [quantity, setQuantity] = useState<number>(4);
-
-  const topFiveUsers = users.slice(0, quantity);
 
   return (
     <>
