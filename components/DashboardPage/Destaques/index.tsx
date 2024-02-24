@@ -1,18 +1,22 @@
 "use client";
 
-import { FaRankingStar } from "react-icons/fa6";
+import { FaPencil, FaRankingStar } from "react-icons/fa6";
 import Image from "next/image";
 import PlaySound from "@/components/PlaySound";
+import { Button } from "@nextui-org/react";
 
 export default function Destaques() {
   return (
     <>
       {/* INICIO DESTAQUES */}
       <div className="bg-zinc-900 max-sm:w-full flex flex-col gap-6 bg-opacity-50 rounded-xl p-4 w-96 h-fit">
-        <div>
+        <div className="flex w-full justify-between items-center">
           <h1 className="flex gap-2 px-2 items-center text-xl">
             <FaRankingStar /> Destaques
           </h1>
+          <Button isIconOnly color="primary">
+            <FaPencil />
+          </Button>
         </div>
         <div className="flex flex-col gap-4">
           <div

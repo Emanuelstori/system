@@ -18,7 +18,7 @@ import {
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import Image from "next/image";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { FaPencil, FaPlus } from "react-icons/fa6";
 import { IoNewspaper } from "react-icons/io5";
 import Pagination from "./Pagination";
@@ -35,11 +35,28 @@ export default function Posts({
   posts,
   maxPage,
 }: {
-  posts: Post[];
+  posts: ({
+    watchedBy: {
+      user: {
+        nick: string;
+      };
+    }[];
+  } & {
+    id: number;
+    image: string;
+    title: string;
+    description: string;
+    content: string;
+    likes: number;
+    dislikes: number;
+    authorId: string;
+    createdAt: Date;
+  })[];
   maxPage: number;
 }) {
   const currentUser = useUserContext();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { push } = useRouter();
   return (
     <>
       {currentUser!.roleLevel >= minLevelCreatePost && (
@@ -71,6 +88,7 @@ export default function Posts({
           {posts.map((item, index) => (
             <div
               key={index}
+              onClick={() => push(`/dashboard/posts/${item.title}`)}
               onMouseEnter={PlaySound}
               className="bg-zinc-900 hover:bg-zinc-950 max-sm:w-full hover:!bg-opacity-30 w-56 h-fit py-1 rounded-md hover:cursor-pointer hover:scale-105 transition-all duration-250"
               style={{
@@ -104,55 +122,22 @@ export default function Posts({
                   {item.description}
                 </div>
                 <div className="w-full max-sm:!px-1 items-start justify-start px-4 py-2">
-                  <AvatarGroup
-                    onMouseEnter={PlaySound}
-                    size="sm"
-                    isBordered
-                    max={3}
-                    total={10}
-                    className="justify-start"
-                  >
-                    <Avatar
-                      size="sm"
-                      onMouseEnter={PlaySound}
-                      icon={
-                        <Image
-                          fill={true}
-                          style={{ objectFit: "cover" }}
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          src={`https://www.habbo.com/habbo-imaging/avatarimage?size=l&figure=hr-3260-1394.hd-3103-8.ch-245-110.lg-3116-110-110.sh-906-92.ha-1009-1323.ea-5007.fa-1211.cc-3744-110-110&direction=2&head_direction=3&size=l&action=std,wav`}
-                          alt={""}
-                        />
-                      }
-                    />
-                    <Avatar
+                  {item.watchedBy.length > 0 ? (
+                    <AvatarGroup
                       onMouseEnter={PlaySound}
                       size="sm"
-                      icon={
-                        <Image
-                          fill={true}
-                          style={{ objectFit: "cover" }}
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          src={`https://www.habbo.com/habbo-imaging/avatarimage?size=l&figure=hr-3852-1398.hd-3099-1.ch-3076-110-110.lg-3006-110-110.sh-3064-110.he-3189-93.ca-3085-1410.cc-3634-110-64&direction=2&head_direction=3&size=l&action=std,wav`}
-                          alt={""}
-                        />
-                      }
-                    />
-                    <Avatar
-                      onMouseEnter={PlaySound}
-                      size="sm"
-                      icon={
-                        <Image
-                          fill={true}
-                          style={{ objectFit: "cover" }}
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          src={`https://www.habbo.com/habbo-imaging/avatarimage?size=l&figure=hr-3852-1398.hd-3099-1.ch-3076-110-110.lg-3006-110-110.sh-3064-110.he-3189-93.ca-3085-1410.cc-3634-110-64&direction=2&head_direction=3&size=l&action=std,wav`}
-                          alt={""}
-                        />
-                      }
-                    />
-                  </AvatarGroup>
-                  <div></div>
+                      isBordered
+                      max={3}
+                      total={item.watchedBy.length - 3}
+                      className="justify-start"
+                    >
+                      {item.watchedBy.map((itm, idx) => (
+                        <AvatarItem user={itm.user} />
+                      ))}
+                    </AvatarGroup>
+                  ) : (
+                    <div className="h-fit py-1">Ninguém viu ainda</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -165,3 +150,44 @@ export default function Posts({
     </>
   );
 }
+
+interface AvatarItemProps {
+  user: {
+    nick: string;
+  };
+}
+
+const AvatarItem: React.FC<AvatarItemProps> = ({ user }) => {
+  const [figureData, setFigureData] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      const response = await fetch(
+        `https://www.habbo.com.br/api/public/users?name=${user.nick}`
+      );
+      const data = await response.json();
+      setFigureData(data.figureString); // assuming figureData is the correct property in the API response
+    };
+    fetchAvatar();
+  }, [user]);
+
+  if (!figureData) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <Avatar
+      onMouseEnter={PlaySound}
+      size="sm"
+      icon={
+        <Image
+          fill={true}
+          style={{ objectFit: "cover" }}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          src={`https://www.habbo.com/habbo-imaging/avatarimage?size=l&figure=${figureData}&direction=2&head_direction=3&size=l&action=std,wav`}
+          alt={""}
+        />
+      }
+    />
+  );
+};

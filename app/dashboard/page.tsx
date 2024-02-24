@@ -120,7 +120,25 @@ async function getUsers(): Promise<User[] | null> {
   }
 }
 
-async function getPosts({ page }: { page: number }): Promise<Post[]> {
+async function getPosts({ page }: { page: number }): Promise<
+  ({
+    watchedBy: {
+      user: {
+        nick: string;
+      };
+    }[];
+  } & {
+    id: number;
+    image: string;
+    title: string;
+    description: string;
+    content: string;
+    likes: number;
+    dislikes: number;
+    authorId: string;
+    createdAt: Date;
+  })[]
+> {
   try {
     var pageNumber = page || 1;
     let skipValue;
@@ -135,6 +153,17 @@ async function getPosts({ page }: { page: number }): Promise<Post[]> {
       take: 5,
       orderBy: {
         createdAt: "desc",
+      },
+      include: {
+        watchedBy: {
+          select: {
+            user: {
+              select: {
+                nick: true,
+              },
+            },
+          },
+        },
       },
     });
     return posts;
