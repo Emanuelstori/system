@@ -31,6 +31,9 @@ export default function NavBar({
   userInfo: UserDataFiltred | undefined;
 }) {
   const { push } = useRouter();
+  if (!userInfo) {
+    return;
+  }
   const icons = {
     chevron: (
       <ChevronDown
@@ -100,7 +103,11 @@ export default function NavBar({
                       <DropdownItem
                         href={itemSubMenu.href}
                         key={index}
-                        className="w-40"
+                        className={`w-40 ${
+                          itemSubMenu.minLevel != undefined &&
+                          userInfo.roleLevel < itemSubMenu.minLevel &&
+                          "hidden"
+                        }`}
                       >
                         {itemSubMenu.title}
                       </DropdownItem>
@@ -159,7 +166,11 @@ export default function NavBar({
                       <DropdownItem
                         href={itemSubMenu.href}
                         key={index}
-                        className="w-52"
+                        className={`w-52 ${
+                          itemSubMenu.minLevel != undefined &&
+                          userInfo.roleLevel < itemSubMenu.minLevel &&
+                          "hidden"
+                        }`}
                       >
                         {itemSubMenu.title}
                       </DropdownItem>

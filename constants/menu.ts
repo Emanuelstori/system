@@ -1,3 +1,5 @@
+import { minLevelSeeAllDocs, minLevelSeeGestao } from ".";
+
 export const menuItems = [
   {
     title: "Início",
@@ -56,6 +58,16 @@ export const menuItems = [
         title: "Código Penal",
         href: "/dashboard/codpenal",
       },
+      {
+        title: "Lista de documentos",
+        href: "/dashboard/docs",
+        minLevel: minLevelSeeAllDocs,
+      },
     ],
+  },
+  {
+    title: "Gestão",
+    href: "/dashboard/",
+    minLevel: minLevelSeeGestao,
   },
 ];

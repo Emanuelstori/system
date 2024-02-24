@@ -43,7 +43,7 @@ export default function Estatuto({
       )}
 
       {/* INICIO ESTATUTO */}
-      <div className="w-full bg-zinc-900 overflow-y-auto max-h-[calc(100vh-4.9999rem)] p-5 container-estatuto">
+      <div className="w-full bg-zinc-900 overflow-y-auto max-h-[var(--navbar-height)] p-5 container-estatuto">
         {estatuto && parse(estatuto.content)}
       </div>
       {/* FIM ESTATUTO */}

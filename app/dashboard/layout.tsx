@@ -7,6 +7,10 @@ import { Spinner } from "@nextui-org/react";
 import { UserDataFiltred, UserResponse } from "@/Types/UserType";
 import NavBar from "@/components/DashboardPage/NavBar";
 import UserProvider from "@/providers/UserProvider";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ptBR } from "@mui/material/locale";
+
+const theme = createTheme({}, ptBR);
 
 export default function DashboardLayout({
   children,
@@ -44,16 +48,18 @@ export default function DashboardLayout({
   //onContextMenu={(e) => e.preventDefault()}
   return (
     <main className="max-w-screen">
-      <UserProvider userInfo={userInfo}>
-        <NavBar
-          userInfo={userInfo}
-          isMenuOpen={isMenuOpen}
-          setIsMenuOpen={setIsMenuOpen}
-        />
-        <div className="flex w-full max-w-screen overflow-hidden">
-          {children}
-        </div>
-      </UserProvider>
+      <ThemeProvider theme={theme}>
+        <UserProvider userInfo={userInfo}>
+          <NavBar
+            userInfo={userInfo}
+            isMenuOpen={isMenuOpen}
+            setIsMenuOpen={setIsMenuOpen}
+          />
+          <div className="flex w-full max-w-screen overflow-hidden">
+            {children}
+          </div>
+        </UserProvider>
+      </ThemeProvider>
     </main>
   );
 }

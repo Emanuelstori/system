@@ -42,7 +42,7 @@ export default function Codpenal({
       )}
 
       {/* INICIO ESTATUTO */}
-      <div className="w-full bg-zinc-900 overflow-y-auto max-h-[calc(100vh-4.9999rem)] p-5 container-penal">
+      <div className="w-full bg-zinc-900 overflow-y-auto max-h-[var(--navbar-height)] p-5 container-penal">
         {codpenal && parse(codpenal.content)}
       </div>
       {/* FIM ESTATUTO */}
