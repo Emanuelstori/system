@@ -132,7 +132,7 @@ export default function Posts({
                       className="justify-start"
                     >
                       {item.watchedBy.map((itm, idx) => (
-                        <AvatarItem user={itm.user} />
+                        <AvatarItem key={idx} user={itm.user} />
                       ))}
                     </AvatarGroup>
                   ) : (
