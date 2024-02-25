@@ -3,9 +3,10 @@ import * as React from "react";
 import { DataGrid, GridCellParams, GridColDef } from "@mui/x-data-grid";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale"; // Importe o locale para português brasileiro
-import { FaEye, FaPencil, FaX } from "react-icons/fa6";
+import { FaEye, FaPencil } from "react-icons/fa6";
 import { Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import DeleteOption from "./DeleteOption";
 
 export default function DisableClickSelectionGrid({
   documents,
@@ -76,9 +77,7 @@ export default function DisableClickSelectionGrid({
           <Button isIconOnly color="primary" aria-label="Edit">
             <FaPencil />
           </Button>
-          <Button isIconOnly color="danger" aria-label="Delete">
-            <FaX />
-          </Button>
+          <DeleteOption />
         </div>
       ),
     })),

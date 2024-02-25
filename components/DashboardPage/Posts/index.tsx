@@ -129,7 +129,7 @@ export default function Posts({
                       isBordered
                       max={3}
                       total={item.watchedBy.length - 3}
-                      className="justify-start"
+                      className="justify-start px-1"
                     >
                       {item.watchedBy.map((itm, idx) => (
                         <AvatarItem key={idx} user={itm.user} />

@@ -10,7 +10,6 @@ import { cookies } from "next/headers";
 import { verify } from "jsonwebtoken";
 import SearchBox from "@/components/DashboardPage/SearchBox/index";
 import prisma from "@/prisma/client";
-import { Post } from "@prisma/client";
 import BotaoPresenca from "@/components/DashboardPage/BotaoPresenca";
 import { ToastContainer } from "react-toastify";
 

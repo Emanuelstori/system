@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function EstatutoModal({
   isOpen,
@@ -75,31 +75,34 @@ export default function EstatutoModal({
     }
   };
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="full">
-      <ModalContent>
-        {(onClose) => (
-          <form onSubmit={handleSubmit}>
-            <ModalHeader className="flex flex-col gap-1">
-              Editar Estatuto
-            </ModalHeader>
-            <ModalBody>
-              <div className="w-full flex items-center justify-center">
-                <div className="h-fit bg-white w-[calc(100%-32rem)] max-h-[calc(100vh-20rem)] overflow-y-auto">
-                  <TextEditor value={value} setValue={setValue} />
+    <>
+      <ToastContainer autoClose={5000} />
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="full">
+        <ModalContent>
+          {(onClose) => (
+            <form onSubmit={handleSubmit}>
+              <ModalHeader className="flex flex-col gap-1">
+                Editar Estatuto
+              </ModalHeader>
+              <ModalBody>
+                <div className="w-full flex items-center justify-center">
+                  <div className="h-fit bg-white w-[calc(100%-32rem)] max-h-[calc(100vh-20rem)] overflow-y-auto">
+                    <TextEditor value={value} setValue={setValue} />
+                  </div>
                 </div>
-              </div>
-            </ModalBody>
-            <ModalFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
-                Fechar
-              </Button>
-              <Button color="primary" type="submit">
-                Alterar
-              </Button>
-            </ModalFooter>
-          </form>
-        )}
-      </ModalContent>
-    </Modal>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Fechar
+                </Button>
+                <Button color="primary" type="submit">
+                  Alterar
+                </Button>
+              </ModalFooter>
+            </form>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
   );
 }

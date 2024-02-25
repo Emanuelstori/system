@@ -85,53 +85,54 @@ export default function UserArea({
             onClick={() => push(`/dashboard/profile/${userInfo?.username}`)}
             startContent={
               <GiPoliceOfficerHead
-                className={`${iconClasses} group-hover:fill-yellow-300 transition-all duration-200`}
+                className={`${iconClasses} group-hover:fill-blue-400 transition-all duration-200`}
               />
             }
           >
-            <p className="group-hover:text-yellow-300">Ver Perfil</p>
+            <p className="group-hover:text-blue-400">Ver Perfil</p>
           </DropdownItem>
           <DropdownItem
             key="team_settings"
             onMouseEnter={PlaySound}
             startContent={
               <FaPencilAlt
-                className={`${iconClasses} group-hover:fill-yellow-300 transition-all duration-200`}
+                className={`${iconClasses} group-hover:fill-blue-400 transition-all duration-200`}
               />
             }
           >
-            <p className="group-hover:text-yellow-300">Editar Perfil</p>
+            <p className="group-hover:text-blue-400">Alterar Senha</p>
           </DropdownItem>
-          <DropdownItem
+          {/* {<DropdownItem
             key="configurations"
             onMouseEnter={PlaySound}
             startContent={
               <FaGear
-                className={`${iconClasses} group-hover:fill-yellow-300 transition-all duration-200`}
+                className={`${iconClasses} group-hover:fill-blue-400 transition-all duration-200`}
               />
             }
           >
-            <p className="group-hover:text-yellow-300">Configurações</p>
-          </DropdownItem>
+            <p className="group-hover:text-blue-400">Configurações</p>
+          </DropdownItem>} */}
           <DropdownItem
             key="help_and_feedback"
             onMouseEnter={PlaySound}
             startContent={
               <FaBug
-                className={`${iconClasses} group-hover:fill-yellow-300 transition-all duration-200`}
+                className={`${iconClasses} group-hover:fill-blue-400 transition-all duration-200`}
               />
             }
           >
-            <p className="group-hover:text-yellow-300">Bugs & feedback</p>
+            <p className="group-hover:text-blue-400">Bugs & feedback</p>
           </DropdownItem>
           <DropdownItem
             key="logout"
             onMouseEnter={PlaySound}
             color="danger"
+            className="hover:!text-red-500 transition-all duration-200"
             onClick={logOut}
             startContent={
               <CiLogout
-                className={`${iconClasses} group-hover:fill-danger transition-all duration-200`}
+                className={`${iconClasses} group-hover:fill-red-500 transition-all duration-200`}
               />
             }
           >

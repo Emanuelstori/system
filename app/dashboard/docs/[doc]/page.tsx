@@ -10,7 +10,7 @@ export default async function PageDocument({
 }: {
   params: { doc: string };
 }) {
-  const currentDoc = await getDoc({ doc: params.doc });
+  const currentDoc = await getDoc({ doc: decodeURIComponent(params.doc) });
   if (params.doc && currentDoc) {
     return (
       <div>
