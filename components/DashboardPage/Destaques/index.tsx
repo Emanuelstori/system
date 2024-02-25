@@ -3,9 +3,33 @@
 import { FaPencil, FaRankingStar } from "react-icons/fa6";
 import Image from "next/image";
 import PlaySound from "@/components/PlaySound";
-import { Button } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import ModalAddDestaques from "./ModalAddDestaques";
 
-export default function Destaques() {
+type User = {
+  nick: string;
+  Profile: {
+    points: number;
+  } | null;
+};
+export default function Destaques({
+  awardeds,
+  userList,
+}: {
+  awardeds:
+    | {
+        awarded: {
+          user: {
+            nick: string;
+          };
+          role: {
+            role: string;
+          };
+        }[];
+      }[]
+    | null;
+  userList: User[];
+}) {
   return (
     <>
       {/* INICIO DESTAQUES */}
@@ -14,45 +38,53 @@ export default function Destaques() {
           <h1 className="flex gap-2 px-2 items-center text-xl">
             <FaRankingStar /> Destaques
           </h1>
-          <Button isIconOnly color="primary">
-            <FaPencil />
-          </Button>
+          <ModalAddDestaques userList={userList} />
         </div>
         <div className="flex flex-col gap-4">
-          <div
-            onMouseEnter={PlaySound}
-            className="flex w-full bg-blue-500 h-20 rounded-md hover:cursor-pointer hover:bg-green-500 transition-all duration-250"
-          >
-            <div className="w-full flex items-center h-20 rounded-md">
-              <div className="relative w-20 h-20 p-1">
-                <Image
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  fill={true}
-                  className="p-1"
-                  style={{ objectFit: "cover" }}
-                  src={`https://www.habbo.com/habbo-imaging/avatarimage?size=l&figure=hr-3852-1398.hd-3099-1.ch-3076-110-110.lg-3006-110-110.sh-3064-110.he-3189-93.ca-3085-1410.cc-3634-110-64&direction=3&head_direction=3&gesture=sml&action=std,crr=667`}
-                  alt={""}
-                />
-              </div>
-              <div>
-                <p>B.L.P.S</p>
-                <p>Diretora Geral - {process.env.NEXT_PUBLIC_POLICE_NAME}</p>
+          {awardeds?.map((item, index) => (
+            <div
+              onMouseEnter={PlaySound}
+              className="flex w-full bg-blue-500 h-20 rounded-md hover:cursor-pointer hover:bg-green-500 transition-all duration-250"
+              key={index}
+            >
+              {item.awarded.map((destaque, index) => (
+                <div className="w-full flex items-center h-20 rounded-md">
+                  <div className="relative w-20 h-20 p-1">
+                    <AvatarItem key={index} user={destaque.user} />
+                  </div>
+                  <div>
+                    <p>{destaque.user.nick}</p>
+                    <p>
+                      {destaque.role.role} -{" "}
+                      {process.env.NEXT_PUBLIC_POLICE_NAME}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              <div className="w-fit flex h-full items-center px-2">
+                <div className="relative w-16 h-14 p-1">
+                  <Image
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    fill={true}
+                    className="p-1"
+                    style={{ objectFit: "cover" }}
+                    src={`https://www.habbo.com.br/habbo-imaging/badge/b07104s36134s44014s411340aa4fc4aaafc7a8ab371cf429a05a155.gif`}
+                    alt={""}
+                  />
+                </div>
               </div>
             </div>
-            <div className="w-fit flex h-full items-center px-2">
-              <div className="relative w-16 h-14 p-1">
-                <Image
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  fill={true}
-                  className="p-1"
-                  style={{ objectFit: "cover" }}
-                  src={`https://www.habbo.com.br/habbo-imaging/badge/b07104s36134s44014s411340aa4fc4aaafc7a8ab371cf429a05a155.gif`}
-                  alt={""}
-                />
-              </div>
-            </div>
-          </div>
-          <div
+          ))}
+        </div>
+      </div>
+      {/* FIM DESTAQUES */}
+    </>
+  );
+}
+
+{
+  /*
+<div
             onMouseEnter={PlaySound}
             className="flex w-full bg-blue-500 h-20 rounded-md hover:cursor-pointer hover:bg-green-500 transition-all duration-250"
           >
@@ -85,9 +117,41 @@ export default function Destaques() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      {/* FIM DESTAQUES */}
-    </>
-  );
+*/
 }
+
+interface AvatarItemProps {
+  user: {
+    nick: string;
+  };
+}
+
+const AvatarItem: React.FC<AvatarItemProps> = ({ user }) => {
+  const [figureData, setFigureData] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      const response = await fetch(
+        `https://www.habbo.com.br/api/public/users?name=${user.nick}`
+      );
+      const data = await response.json();
+      setFigureData(data.figureString); // assuming figureData is the correct property in the API response
+    };
+    fetchAvatar();
+  }, [user]);
+
+  if (!figureData) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <Image
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      fill={true}
+      className="p-1"
+      style={{ objectFit: "cover" }}
+      src={`https://www.habbo.com/habbo-imaging/avatarimage?size=l&figure=${figureData}&direction=3&head_direction=3&gesture=sml&action=std,crr=667`}
+      alt={""}
+    />
+  );
+};

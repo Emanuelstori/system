@@ -33,6 +33,8 @@ export default async function DashboardPage({
 
   const advice = await getAdviceSquare();
 
+  const awardeds = await getAwards();
+
   return (
     <div className="w-full max-w-screen h-full">
       <div className="rounded-lg w-full flex flex-col px-4 md:!px-16 pl-20 py-1">
@@ -61,7 +63,7 @@ export default async function DashboardPage({
         </div>
         <div className="flex w-full mt-2 justify-center md:justify-between h-fit items-start gap-16 flex-wrap-reverse md:!flex-nowrap">
           <Posts posts={posts} maxPage={maxPage} />
-          <Destaques />
+          <Destaques awardeds={awardeds} userList={userList ? userList : []} />
         </div>
       </div>
       <div></div>
@@ -190,6 +192,50 @@ async function getAdviceSquare() {
     const res = await prisma.advice.findFirst({
       orderBy: {
         createdAt: "desc",
+      },
+    });
+    return res;
+  } catch (e) {
+    return null;
+  } finally {
+    prisma.$disconnect();
+  }
+}
+
+async function getAwards(): Promise<
+  | {
+      awarded: {
+        user: {
+          nick: string;
+        };
+        role: {
+          role: string;
+        };
+      }[];
+    }[]
+  | null
+> {
+  try {
+    const res = await prisma.awarded.findMany({
+      take: 2,
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        awarded: {
+          select: {
+            user: {
+              select: {
+                nick: true,
+              },
+            },
+            role: {
+              select: {
+                role: true,
+              },
+            },
+          },
+        },
       },
     });
     return res;
