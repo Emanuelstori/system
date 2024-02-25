@@ -1,4 +1,8 @@
-import { COOKIE_NAME, minLevelEditAdvice } from "@/constants";
+import {
+  COOKIE_NAME,
+  minLevelEditAdvice,
+  minLevelEditAward,
+} from "@/constants";
 import prisma from "@/prisma/client";
 import HttpStatusCode from "@/utils/HttpStatusCode";
 import { verify } from "jsonwebtoken";
@@ -55,7 +59,7 @@ export async function POST(request: Request) {
   try {
     if (
       !payload.data.roleLevel ||
-      !(payload.data.roleLevel <= minLevelEditAdvice)
+      !(payload.data.roleLevel <= minLevelEditAward)
     ) {
       return NextResponse.json(
         {

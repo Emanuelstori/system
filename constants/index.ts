@@ -13,3 +13,4 @@ export const minLevelActivateUser = 1000;
 export const minLevelCreateAgent = 1;
 export const minLevelSeeAllDocs = 1001;
 export const minLevelSeeGestao = 1000;
+export const minLevelEditAward = 1000;
