@@ -48,7 +48,7 @@ export default function Destaques({
               key={index}
             >
               {item.awarded.map((destaque, index) => (
-                <div className="w-full flex items-center h-20 rounded-md">
+                <div key={index} className="w-full flex items-center h-20 rounded-md">
                   <div className="relative w-20 h-20 p-1">
                     <AvatarItem key={index} user={destaque.user} />
                   </div>

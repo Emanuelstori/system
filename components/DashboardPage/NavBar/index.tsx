@@ -118,7 +118,11 @@ export default function NavBar({
             ) : (
               <Button
                 size="lg"
-                className="p-0 bg-transparent data-[hover=true]:bg-transparent"
+                className={`p-0 bg-transparent data-[hover=true]:bg-transparent ${
+                  item.minLevel != undefined &&
+                  userInfo.roleLevel < item.minLevel &&
+                  "hidden"
+                }`}
                 radius="sm"
                 variant="light"
                 onPress={() => push(item.href)}
@@ -181,7 +185,11 @@ export default function NavBar({
             ) : (
               <Button
                 size="lg"
-                className="p-0 !justify-start bg-transparent data-[hover=true]:bg-transparent"
+                className={`p-0 bg-transparent data-[hover=true]:bg-transparent ${
+                  item.minLevel != undefined &&
+                  userInfo.roleLevel < item.minLevel &&
+                  "hidden"
+                }`}
                 radius="sm"
                 variant="light"
                 onPress={() => push(item.href)}

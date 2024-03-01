@@ -25,8 +25,8 @@ type User = {
 };
 
 export default function ModalAddDestaques({ userList }: { userList: User[] }) {
-  if (!userList) return;
   const { onClose, isOpen, onOpen, onOpenChange } = useDisclosure();
+  if (!userList) return;
   const [values, setValues] = useState<Selection>(new Set([]));
 
   const router = useRouter();
