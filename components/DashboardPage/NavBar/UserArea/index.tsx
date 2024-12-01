@@ -12,7 +12,6 @@ import Image from "next/image";
 import { FaPencilAlt, FaBug } from "react-icons/fa";
 import { GiPoliceOfficerHead } from "react-icons/gi";
 import { CiLogout } from "react-icons/ci";
-import { FaGear } from "react-icons/fa6";
 import { UserDataFiltred } from "@/Types/UserType";
 import DeleteCookie from "@/utils/DeleteCookie";
 import { COOKIE_NAME } from "@/constants";
@@ -62,12 +61,14 @@ export default function UserArea({
             className="rounded-full relative w-12 h-12 border-2 p-1"
           >
             <div className="w-full h-full flex bg-white rounded-full items-center justify-center">
-              <Image
-                src={userFigure}
-                alt="Landscape picture"
-                width={50}
-                height={50}
-              />
+              {userFigure && (
+                <Image
+                  src={userFigure}
+                  alt="Landscape picture"
+                  width={50}
+                  height={50}
+                />
+              )}
             </div>
           </div>
         </DropdownTrigger>

@@ -26,10 +26,10 @@ type User = {
 
 export default function ModalAddDestaques({ userList }: { userList: User[] }) {
   const { onClose, isOpen, onOpen, onOpenChange } = useDisclosure();
-  if (!userList) return;
   const [values, setValues] = useState<Selection>(new Set([]));
-
   const router = useRouter();
+  if (!userList) return;
+
   const onSubmit = async (formData: FormData) => {
     const nonEmptyValues = Array.from(values).filter((value) => value !== "");
     if (
