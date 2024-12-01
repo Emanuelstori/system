@@ -113,7 +113,7 @@ async function getPatentes(): Promise<PatenteComImagem[] | null> {
   }
 }
 
-async function getUserImage(user: User): Promise<string> {
+async function getUserImage(user: User): Promise<any> {
   try {
     const res = await fetch(
       `https://www.habbo.com.br/api/public/users?name=${user.nick}`
