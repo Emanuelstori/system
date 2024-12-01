@@ -12,13 +12,15 @@ type User = {
 };
 
 export default function SearchBox({ users }: { users: User[] | null }) {
-  const [value, setValue] = useState<Key>("");
+  const [value, setValue] = useState<Key | null>(null); // Allow null values
   const { push } = useRouter();
+
   function handleChange() {
     if (value) {
       push("/dashboard/profile/" + value.toString());
     }
   }
+
   if (users) {
     return (
       <div className="w-96">
@@ -26,10 +28,10 @@ export default function SearchBox({ users }: { users: User[] | null }) {
           label="Usuários"
           placeholder="Busque um usuário.."
           className="max-w-lg"
-          onSelectionChange={setValue}
+          onSelectionChange={setValue} // This now matches the expected type
           onInputChange={handleChange}
         >
-          {users?.map((item, index) => (
+          {users?.map((item) => (
             <AutocompleteItem key={item.nick}>{item.nick}</AutocompleteItem>
           ))}
         </Autocomplete>
