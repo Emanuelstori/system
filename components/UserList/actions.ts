@@ -4,14 +4,14 @@ import { COOKIE_NAME } from "@/constants";
 import axios from "axios";
 import { cookies, headers } from "next/headers";
 
-export async function createUser(formData: FormData) {
+export async function createUser(formData: FormData): Promise<undefined | boolean> {
   const headersList = headers();
   const domain = headersList.get("host");
   const cookieStore = cookies();
 
   const token = cookieStore.get(COOKIE_NAME);
   if (!token) {
-    return;
+    return false;
   }
   const rawFormData = {
     username: formData.get("username"),
