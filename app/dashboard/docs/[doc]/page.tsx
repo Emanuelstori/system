@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 
 interface PageDocumentProps {
-  params: { doc: string };
+  params: any;
 }
 
 export default async function PageDocument({ params }: PageDocumentProps) {
