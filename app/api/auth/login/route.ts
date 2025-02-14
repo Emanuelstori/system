@@ -1,13 +1,11 @@
 import { COOKIE_NAME } from "@/constants";
 import { serialize } from "cookie";
 import { sign } from "jsonwebtoken";
-import { NextResponse } from "next/server";
 import prisma from "@/prisma/client";
 import bcrypt from "bcrypt";
 import HttpStatusCode from "@/utils/HttpStatusCode";
 
-const MAX_AGE = 21600; // 6 horas;
-
+const MAX_AGE = 21600; // 6 horas
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -15,15 +13,16 @@ export async function POST(request: Request) {
   const { username, password } = body;
 
   if (!username || !password) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Missing Fields",
-      },
+      }),
       {
         status: HttpStatusCode.BAD_REQUEST,
       }
     );
   }
+
   try {
     const userData = await prisma.user.findUnique({
       where: {
@@ -45,21 +44,23 @@ export async function POST(request: Request) {
         },
       },
     });
+
     if (!userData) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Not Found",
-        },
+        }),
         {
           status: HttpStatusCode.NOT_FOUND,
         }
       );
     }
+
     if (userData.active === false || !userData.password) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Inactive Account",
-        },
+        }),
         {
           status: HttpStatusCode.BAD_REQUEST,
         }
@@ -67,10 +68,10 @@ export async function POST(request: Request) {
     }
 
     if (!(await bcrypt.compare(password, userData.password))) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Unauthorized",
-        },
+        }),
         {
           status: HttpStatusCode.UNAUTHORIZED,
         }
@@ -98,7 +99,7 @@ export async function POST(request: Request) {
       }
     );
 
-    const seralized = serialize(COOKIE_NAME, token, {
+    const serialized = serialize(COOKIE_NAME, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
@@ -112,20 +113,20 @@ export async function POST(request: Request) {
 
     return new Response(JSON.stringify(response), {
       status: 200,
-      headers: { "Set-Cookie": seralized },
+      headers: { "Set-Cookie": serialized },
     });
   } catch (err) {
     console.log(err);
 
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Unauthorized",
-      },
+      }),
       {
         status: HttpStatusCode.INTERNAL_SERVER_ERROR,
       }
     );
   } finally {
-    prisma.$disconnect();
+    await prisma.$disconnect();
   }
 }
