@@ -5,13 +5,14 @@ import prisma from "@/prisma/client";
 import { redirect } from "next/navigation";
 import React from "react";
 
-export default async function PageDocument({
-  params,
-}: {
+interface PageDocumentProps {
   params: { doc: string };
-}) {
-  const currentDoc = await getDoc({ doc: params.doc });
-  if (params.doc && currentDoc) {
+}
+
+export default async function PageDocument({ params }: PageDocumentProps) {
+  const currentDoc = await getDoc(params.doc);
+
+  if (currentDoc) {
     return (
       <div>
         <GeneralDocument doc={currentDoc} />
@@ -22,7 +23,7 @@ export default async function PageDocument({
   }
 }
 
-async function getDoc({ doc }: { doc: string }): Promise<{
+async function getDoc(doc: string): Promise<{
   id: number;
   title: string;
   description: string;
