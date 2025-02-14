@@ -30,7 +30,7 @@ export default function Home() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const id = toast.loading("Autenticando...", {
-      position: toast.POSITION.BOTTOM_RIGHT,
+      position: "bottom-right",
       theme: "dark",
     });
 
@@ -64,10 +64,9 @@ export default function Home() {
       });
     }
   };
-
   const handleRegister = async () => {
     const id = toast.loading("Registrando...", {
-      position: toast.POSITION.BOTTOM_RIGHT,
+      position: "bottom-right",
       theme: "dark",
     });
     if (!valueNick || !valuePass) return;
@@ -106,7 +105,7 @@ export default function Home() {
         theme: "dark",
         autoClose: 5000,
         closeButton: true,
-        position: toast.POSITION.BOTTOM_RIGHT,
+        position: "bottom-right",
       });
       return;
     }

@@ -100,7 +100,7 @@ function AulaMount({
   };
   patentes: Role[];
 }): ReactNode {
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (formData: FormData):Promise<any> => {
     var aprovado: boolean = false;
     if (formData.get("approved") != null) {
       aprovado = true;
@@ -150,7 +150,7 @@ function AulaMount({
       console.log("Erro");
     }
   };
-  const handleSubmitAPC = async (formData: FormData) => {
+  const handleSubmitAPC = async (formData: FormData):Promise<any> => {
     var aprovado: boolean = false;
     if (formData.get("approved") != null) {
       aprovado = true;
