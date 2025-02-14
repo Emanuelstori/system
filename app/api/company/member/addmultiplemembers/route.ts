@@ -2,7 +2,6 @@ import { COOKIE_NAME, minLevelAddMemberCompany } from "@/constants";
 import prisma from "@/prisma/client";
 import { verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -11,25 +10,26 @@ export async function POST(request: Request) {
     usernick,
     role,
   }: { name: string; usernick: [string]; role: string } = body;
+  
   if (!name || !usernick || !role) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Something went wrong",
-      },
+      }),
       {
         status: 400,
       }
     );
   }
-  const cookieStore = cookies();
 
-  const token = cookieStore.get(COOKIE_NAME);
+  const cookieStore = cookies();
+  const token = (await cookieStore).get(COOKIE_NAME);
 
   if (!token) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Unauthorized",
-      },
+      }),
       {
         status: 401,
       }
@@ -37,18 +37,16 @@ export async function POST(request: Request) {
   }
 
   const { value } = token;
-
-  // Always check this
   const secret = process.env.JWT_SECRET || "";
 
   try {
     const response = verify(value, secret);
     if (typeof response === "object" && response !== null) {
       if (response.data.roleLevel < minLevelAddMemberCompany) {
-        return NextResponse.json(
-          {
+        return new Response(
+          JSON.stringify({
             message: "Unauthorized",
-          },
+          }),
           {
             status: 401,
           }
@@ -56,15 +54,16 @@ export async function POST(request: Request) {
       }
     }
   } catch (e) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Something went wrong",
-      },
+      }),
       {
         status: 400,
       }
     );
   }
+
   try {
     const userExists = await prisma.user.findMany({
       where: {
@@ -76,16 +75,18 @@ export async function POST(request: Request) {
         id: true,
       },
     });
+
     if (!userExists) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Something went wrong",
-        },
+        }),
         {
           status: 400,
         }
       );
     }
+
     const userIds = userExists.map((user) => user.id);
     const userJustMember = await prisma.companyRole.findMany({
       select: {
@@ -113,13 +114,17 @@ export async function POST(request: Request) {
         role: role,
       },
     });
+
     const nicksExistentes = userJustMember.flatMap((role) =>
       role.profiles.map((profile) => profile.user.nick)
     );
+
     const remainingNicks = usernick.filter(
       (nick) => !nicksExistentes.includes(nick)
     );
+
     console.log(remainingNicks);
+
     const companyRoleCorreto = await prisma.companyRole.findFirst({
       select: {
         id: true,
@@ -131,16 +136,18 @@ export async function POST(request: Request) {
         },
       },
     });
+
     if (!companyRoleCorreto) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Something went wrong",
-        },
+        }),
         {
           status: 400,
         }
       );
     }
+
     const users = await prisma.user.findMany({
       where: {
         nick: {
@@ -151,16 +158,18 @@ export async function POST(request: Request) {
         id: true,
       },
     });
+
     if (users.length <= 0) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Ja existente",
-        },
+        }),
         {
           status: 202,
         }
       );
     }
+
     const res = await prisma.companyRole.update({
       where: {
         id: companyRoleCorreto.id,
@@ -171,20 +180,22 @@ export async function POST(request: Request) {
         },
       },
     });
+
     console.log(res);
-    return NextResponse.json(
-      {
+
+    return new Response(
+      JSON.stringify({
         message: "Ok",
-      },
+      }),
       {
         status: 200,
       }
     );
   } catch (err) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Something went wrong",
-      },
+      }),
       {
         status: 400,
       }

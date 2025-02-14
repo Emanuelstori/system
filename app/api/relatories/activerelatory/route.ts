@@ -4,7 +4,6 @@ import prisma from "@/prisma/client";
 import { RelatoryType } from "@prisma/client";
 import { verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -19,11 +18,12 @@ export async function POST(request: Request) {
     targetProfileIds: string[];
     description: string;
   } = body;
+  
   if (!relatoryType || !targetProfileIds || !description || !title) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Missing Fields",
-      },
+      }),
       {
         status: HttpStatusCode.BAD_REQUEST,
       }
@@ -31,14 +31,13 @@ export async function POST(request: Request) {
   }
 
   const cookieStore = cookies();
-
-  const token = cookieStore.get(COOKIE_NAME);
+  const token = (await cookieStore).get(COOKIE_NAME);
 
   if (!token) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Unauthorized",
-      },
+      }),
       {
         status: HttpStatusCode.UNAUTHORIZED,
       }
@@ -46,22 +45,22 @@ export async function POST(request: Request) {
   }
 
   const { value } = token;
-
-  // Always check this
   const secret = process.env.JWT_SECRET || "";
   var payload: any;
+
   try {
     payload = verify(value, secret);
   } catch (e) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Something went wrong",
-      },
+      }),
       {
         status: HttpStatusCode.BAD_REQUEST,
       }
     );
   }
+
   try {
     const permissionUser = await prisma.user.findFirst({
       where: {
@@ -80,21 +79,21 @@ export async function POST(request: Request) {
         },
       },
     });
+
     if (
       !permissionUser?.Profile?.role.roleLevel ||
       permissionUser?.Profile?.role.roleLevel < 6
     ) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Usuário sem permissão.",
-        },
+        }),
         {
           status: HttpStatusCode.FORBIDDEN,
         }
       );
     }
 
-    //console.log(permissionUser.id);
     targetProfileIds.map((id) => console.log(id));
 
     const relatory = await prisma.relatory.create({
@@ -111,29 +110,32 @@ export async function POST(request: Request) {
         },
       },
     });
+
     if (!relatory) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Erro ao criar relatório.",
-        },
+        }),
         {
           status: HttpStatusCode.BAD_REQUEST,
         }
       );
     }
+
     const response = {
       message: "Created",
     };
+
     return new Response(JSON.stringify(response), {
       status: HttpStatusCode.CREATED,
     });
   } catch (err) {
     console.log(err);
 
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "internal Server Error",
-      },
+      }),
       {
         status: HttpStatusCode.INTERNAL_SERVER_ERROR,
       }

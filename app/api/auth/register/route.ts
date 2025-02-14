@@ -1,9 +1,8 @@
-import { NextResponse } from "next/server";
 import axios from "axios";
 import prisma from "@/prisma/client";
 import bcrypt from "bcrypt";
 
-const MAX_AGE = 60 * 60 * 24 * 30; // days;
+const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -11,38 +10,42 @@ export async function POST(request: Request) {
   const { username, password } = body;
 
   if (!username || !password) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Missing Fields",
-      },
+      }),
       {
         status: 400,
       }
     );
   }
+  
   const { data } = await axios.get(
     `https://www.habbo.com.br/api/public/users?name=${username}`
   );
+  
   if (!data) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Bad Gateway",
-      },
+      }),
       {
         status: 502,
       }
     );
   }
-  if (data.motto != `system${process.env.NEXT_PUBLIC_POLICE_NAME}`) {
-    return NextResponse.json(
-      {
+
+  if (data.motto !== `system${process.env.NEXT_PUBLIC_POLICE_NAME}`) {
+    return new Response(
+      JSON.stringify({
         message: "Precondition Failed",
-      },
+      }),
       {
         status: 412,
       }
     );
   }
+  
   const hashedPass = await bcrypt.hash(password, 10);
 
   try {
@@ -53,10 +56,10 @@ export async function POST(request: Request) {
     });
 
     if (!verifyExists || verifyExists.active) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Precondition Failed",
-        },
+        }),
         {
           status: 412,
         }
@@ -76,12 +79,13 @@ export async function POST(request: Request) {
         accepted: true,
       },
     });
+
     if (!canActivate || !canActivate.accepted) {
       console.log(canActivate);
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Precondition Failed",
-        },
+        }),
         {
           status: 412,
         }
@@ -99,10 +103,10 @@ export async function POST(request: Request) {
     });
 
     if (!user) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Precondition Failed",
-        },
+        }),
         {
           status: 412,
         }
@@ -123,12 +127,12 @@ export async function POST(request: Request) {
         description: `Foi nessa data especial que ${verifyExists.nick} se cadastrou em nosso system!`,
       },
     });
-//Foi nessa data especial que DEPOSIT0 se cadastrou em nosso system!
+
     if (!relatoryUpdate) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Precondition Failed",
-        },
+        }),
         {
           status: 412,
         }
@@ -138,15 +142,16 @@ export async function POST(request: Request) {
     const response = {
       message: "Created",
     };
+
     return new Response(JSON.stringify(response), {
       status: 201,
     });
   } catch (err) {
     console.log(err);
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Erro Grave",
-      },
+      }),
       {
         status: 500,
       }

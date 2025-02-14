@@ -1,5 +1,4 @@
 import prisma from "@/prisma/client";
-import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { COOKIE_NAME, minLevelCreateUser } from "@/constants";
 import { verify } from "jsonwebtoken";
@@ -10,10 +9,10 @@ export async function POST(request: Request) {
   const body = await request.json();
   const { username, TAG, patente } = body;
   if (!username || !TAG || !patente) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Missing Fields",
-      },
+      }),
       {
         status: HttpStatusCode.BAD_REQUEST,
       }
@@ -27,20 +26,20 @@ export async function POST(request: Request) {
     if (!exists || test.error) {
       console.log(exists);
       console.log(test);
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Not Found",
-        },
+        }),
         {
           status: HttpStatusCode.NOT_FOUND,
         }
       );
     }
   } catch (e: any) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: e.message,
-      },
+      }),
       {
         status: HttpStatusCode.BAD_REQUEST,
       }
@@ -49,14 +48,14 @@ export async function POST(request: Request) {
   try {
     const cookieStore = cookies();
 
-    const token = cookieStore.get(COOKIE_NAME);
+    const token = (await cookieStore).get(COOKIE_NAME);
 
     if (!token) {
       console.log("Sem TOKEN");
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Unauthorized",
-        },
+        }),
         {
           status: HttpStatusCode.UNAUTHORIZED,
         }
@@ -71,10 +70,10 @@ export async function POST(request: Request) {
       payload = verify(value, secret);
     } catch (e) {
       console.log("ERRO VERIFY");
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Something went wrong",
-        },
+        }),
         {
           status: HttpStatusCode.UNAUTHORIZED,
         }
@@ -101,10 +100,10 @@ export async function POST(request: Request) {
       !permissionUser?.Profile?.role.roleLevel ||
       !(permissionUser?.Profile?.role.roleLevel >= minLevelCreateUser)
     ) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Usuário sem permissão.",
-        },
+        }),
         {
           status: HttpStatusCode.FORBIDDEN,
         }
@@ -116,10 +115,10 @@ export async function POST(request: Request) {
       },
     });
     if (verifyExists) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Usuário já existente.",
-        },
+        }),
         {
           status: HttpStatusCode.FOUND,
         }
@@ -150,10 +149,10 @@ export async function POST(request: Request) {
       },
     });
     if (!user) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Precondition Failed",
-        },
+        }),
         {
           status: 412,
         }
@@ -169,10 +168,10 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     console.log(err);
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Erro Grave",
-      },
+      }),
       {
         status: HttpStatusCode.INTERNAL_SERVER_ERROR,
       }

@@ -2,7 +2,6 @@ import { COOKIE_NAME } from "@/constants";
 import prisma from "@/prisma/client";
 import { verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -11,25 +10,26 @@ export async function POST(request: Request) {
     company,
     roleLevel,
   }: { name: string; company: string; roleLevel: number } = body;
+  
   if (!name || !company || !roleLevel) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Something went wrong",
-      },
+      }),
       {
         status: 400,
       }
     );
   }
-  const cookieStore = cookies();
 
-  const token = cookieStore.get(COOKIE_NAME);
+  const cookieStore = cookies();
+  const token = (await cookieStore).get(COOKIE_NAME);
 
   if (!token) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Unauthorized",
-      },
+      }),
       {
         status: 401,
       }
@@ -37,22 +37,21 @@ export async function POST(request: Request) {
   }
 
   const { value } = token;
-
-  // Always check this
   const secret = process.env.JWT_SECRET || "";
 
   try {
     const response = verify(value, secret);
   } catch (e) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Something went wrong",
-      },
+      }),
       {
         status: 400,
       }
     );
   }
+
   try {
     const companyRoleExists = await prisma.companyRole.findFirst({
       where: {
@@ -62,16 +61,18 @@ export async function POST(request: Request) {
         },
       },
     });
+
     if (companyRoleExists) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Something went wrong",
-        },
+        }),
         {
           status: 400,
         }
       );
     }
+
     const res = await prisma.companyRole.create({
       data: {
         role: name,
@@ -83,19 +84,20 @@ export async function POST(request: Request) {
         },
       },
     });
-    return NextResponse.json(
-      {
+
+    return new Response(
+      JSON.stringify({
         message: "Ok",
-      },
+      }),
       {
         status: 200,
       }
     );
   } catch (err) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Something went wrong",
-      },
+      }),
       {
         status: 400,
       }

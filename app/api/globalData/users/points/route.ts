@@ -4,19 +4,18 @@ import HttpStatusCode from "@/utils/HttpStatusCode";
 import { format } from "date-fns";
 import { JwtPayload, verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const cookieStore = cookies();
-  const token = cookieStore.get(COOKIE_NAME);
+  const token = (await cookieStore).get(COOKIE_NAME);
 
   console.log("token:" + token);
 
   if (!token) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Unauthorized",
-      },
+      }),
       {
         status: 401,
       }
@@ -24,18 +23,16 @@ export async function POST(request: Request) {
   }
 
   const { value } = token;
-
-  // Always check this
   const secret = process.env.JWT_SECRET || "";
 
   try {
     const userData: string | JwtPayload = verify(value, secret);
 
     if (!userData || typeof userData === "string") {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Unauthorized",
-        },
+        }),
         {
           status: HttpStatusCode.UNAUTHORIZED,
         }
@@ -57,16 +54,15 @@ export async function POST(request: Request) {
       },
     });
 
-    const today = new Date().toString();
+    const today = new Date();
     if (
       dailyPoints &&
-      format(dailyPoints?.createdAt.toString(), "dd/MM/yy") ===
-        format(today, "dd/MM/yy")
+      format(dailyPoints.createdAt, "dd/MM/yy") === format(today, "dd/MM/yy")
     ) {
-      return NextResponse.json(
-        {
+      return new Response(
+        JSON.stringify({
           message: "Something went wrong",
-        },
+        }),
         {
           status: HttpStatusCode.BAD_REQUEST,
         }
@@ -81,6 +77,7 @@ export async function POST(request: Request) {
         points: { increment: 1 },
       },
     });
+
     try {
       const res = await prisma.relatory.create({
         data: {
@@ -108,10 +105,10 @@ export async function POST(request: Request) {
       status: 200,
     });
   } catch (e) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Something went wrong",
-      },
+      }),
       {
         status: 500,
       }

@@ -2,7 +2,6 @@ import { COOKIE_NAME } from "@/constants";
 import prisma from "@/prisma/client";
 import { verify } from "jsonwebtoken";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   const cookieStore = cookies();
@@ -11,23 +10,23 @@ export async function POST(request: Request) {
   const { id } = body;
 
   if (!id) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Not Found",
-      },
+      }),
       {
         status: 404,
       }
     );
   }
 
-  const token = cookieStore.get(COOKIE_NAME);
+  const token = (await cookieStore).get(COOKIE_NAME);
 
   if (!token) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Unauthorized",
-      },
+      }),
       {
         status: 401,
       }
@@ -35,17 +34,15 @@ export async function POST(request: Request) {
   }
 
   const { value } = token;
-
-  // Always check this
   const secret = process.env.JWT_SECRET || "";
 
   try {
     verify(value, secret);
   } catch (e) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Something went wrong",
-      },
+      }),
       {
         status: 400,
       }
@@ -73,10 +70,10 @@ export async function POST(request: Request) {
   });
 
   if (!notifications) {
-    return NextResponse.json(
-      {
+    return new Response(
+      JSON.stringify({
         message: "Not Found",
-      },
+      }),
       {
         status: 404,
       }
